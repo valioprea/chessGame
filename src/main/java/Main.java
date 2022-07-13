@@ -9,7 +9,7 @@ public class Main {
         GameLogic gameLogic = new GameLogic(board);
 
         board.initializeSquares(gameLogic);
-        board.initializePieces(gameLogic);
+        board.initializePieces(gameLogic, board.getAllSquares());
         gameLogic.setFrame(board.gameFrame);
     }
 }

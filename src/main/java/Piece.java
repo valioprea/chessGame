@@ -5,21 +5,40 @@ import java.awt.event.MouseListener;
 
 public class Piece extends JLabel {
 
-
+    public Square[][] allSquares;
     private String name;
+    public GameLogic gameLogic;
+    public boolean isWhite;
+    public boolean blocksCheck;
+    public int squaresArrayColumnPosition;
+    public int squaresArrayRowPosition;
 
-    GameLogic gameLogic;
-
-    public Piece(String name, Icon icon, GameLogic gameLogic) {
+    public Piece(String name, Icon icon, GameLogic gameLogic, boolean isWhite, Square[][] allSquares, int squaresArrayColumnPosition, int squaresArrayRowPosition) {
         super(icon);
         this.name = name;
         this.gameLogic = gameLogic;
+        this.isWhite = isWhite;
+        this.allSquares = allSquares;
+        this.squaresArrayColumnPosition = squaresArrayColumnPosition;
+        this.squaresArrayRowPosition = squaresArrayRowPosition;
         this.eventHandler();
+    }
+
+    public boolean isWhite() {
+        return isWhite;
+    }
+
+    public int getSquaresArrayColumnPosition() {
+        return squaresArrayColumnPosition;
+    }
+
+    public int getSquaresArrayRowPosition() {
+        return squaresArrayRowPosition;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     private void eventHandler(){

@@ -8,6 +8,12 @@ public class Square extends JPanel {
     public char xPosition;
     public int yPosition;
 
+    public Piece piece;
+
+    public void setPiece(Piece piece) {
+        this.piece = piece;
+    }
+
     private boolean containsPiece=false;
 
     public void setxPosition(char xPosition) {
