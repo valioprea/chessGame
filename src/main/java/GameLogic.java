@@ -8,14 +8,17 @@ public class GameLogic {
         this.board = board;
     }
 
-    String piece;
-    Piece objectPiece;
+    public Piece objectPiece;
     public Piece getPiece() {
         return objectPiece;
     }
 
     public void grabPiece(Piece objectPiece) {
         this.objectPiece = objectPiece;
+    }
+
+    public void ungrabPiece(){
+        this.objectPiece = null;
     }
 
     public void placePiece(char xPosition, int yPosition){
@@ -33,5 +36,20 @@ public class GameLogic {
 
     public void setFrame(JFrame gameFrame) {
         this.frame = gameFrame;
+    }
+
+    public void whyAmIPressing(char xPosition, int yPosition){
+        for(int i=0;i<8;i++){
+            for(int j=0;j<8;j++){
+                if((board.getAllSquares()[i][j].getxPosition() == xPosition) &&
+                        board.getAllSquares()[i][j].getyPosition() == yPosition){
+                    if(board.getAllSquares()[i][j].getContainsPiece() == false && this.objectPiece == null){
+                        System.out.println("I am just pressing on the board");
+                    } else {
+                        placePiece(xPosition, yPosition);
+                    }
+                }
+            }
+        }
     }
 }

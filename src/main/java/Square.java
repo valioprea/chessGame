@@ -18,7 +18,7 @@ public class Square extends JPanel {
         this.yPosition = yPosition;
     }
 
-    public boolean isContainsPiece() {
+    public boolean getContainsPiece() {
         return containsPiece;
     }
 
@@ -51,19 +51,17 @@ public class Square extends JPanel {
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println(e.getComponent());
-                System.out.println(gameLogic.getPiece());
-                gameLogic.placePiece(getxPosition(),getyPosition());
+
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-
+                gameLogic.whyAmIPressing(getxPosition(),getyPosition());
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-
+                gameLogic.ungrabPiece();
             }
 
             @Override
