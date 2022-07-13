@@ -5,8 +5,8 @@ import java.awt.event.MouseListener;
 public class Square extends JPanel {
 
     private GameLogic gameLogic;
-    private char xPosition;
-    private int yPosition;
+    public char xPosition;
+    public int yPosition;
 
     private boolean containsPiece=false;
 
@@ -53,8 +53,7 @@ public class Square extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 System.out.println(e.getComponent());
                 System.out.println(gameLogic.getPiece());
-                add(gameLogic.getPiece());
-
+                gameLogic.placePiece(getxPosition(),getyPosition());
             }
 
             @Override

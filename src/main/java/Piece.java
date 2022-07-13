@@ -28,8 +28,7 @@ public class Piece extends JLabel {
             public void mouseClicked(MouseEvent e) {
                 System.out.println("clicked");
                 System.out.println(e.getComponent());
-                gameLogic.setPiece((Piece)e.getComponent());
-//                System.out.println(e.getComponent().getName());
+                gameLogic.grabPiece((Piece)e.getComponent());
             }
 
             @Override
