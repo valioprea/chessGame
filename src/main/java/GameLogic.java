@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
 //THIS SHOULD PROBABLY BECOME SOME SORT OF CLASS THAT CONTAINS ALL METHODS WHO GENERATE MOVEMENT LOGIC IN THE FUTURE.
@@ -29,7 +30,7 @@ public class GameLogic {
     public void grabPiece(Piece selectedPiece) { //TODO: this needs rethinking -> only in sequence 1 I can grab the piece, I got lost in the code trying to find out when do I get the targetSquarePositions
         this.selectedPiece = selectedPiece;
         this.setSequence(2);
-        System.out.println("Na de aici coordonatele piesei cand o grabuiesc");
+        System.out.println("...and my piece is "+this.selectedPiece.getName());
         System.out.println("ROW: " + selectedPiece.getRowPosition());
         System.out.println("COL: " + selectedPiece.getColumnPosition());
     }
@@ -39,7 +40,15 @@ public class GameLogic {
         this.setSequence(1);
     }
 
+    //TODO: I should probably implement some sort of board reader before each move, to use it to see each king in relationship with all oppponents pieces, if it is in check or not
+
     public void placePiece(int rowPosition, int columnPosition) {
+
+        //TODO: I will need to think about how to properly do this below:
+        if(this.selectedPiece.getName() == "rook"){
+            ((Rook)this.selectedPiece).setRookHasMovedBeforeCastling(true);
+        }
+
         //Set false to contains piece for previous square
         this.board.getAllSquares()[this.selectedPiece.getRowPosition()][this.selectedPiece.getColumnPosition()].setContainsPiece(false);
 
@@ -68,22 +77,26 @@ public class GameLogic {
 
         String pieceType = selectedPiece.getName();
 
-        boolean isValid;
-//        if(pieceType == "pawn"){  //TODO: this block of code should become uncommented as I implement more and more piece types.
-//            System.out.println("I should implement logic for pawn move validation");
-//        } else if (pieceType == "rook") {
-//            isValid = validateRookMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition);
-//        } else if (pieceType == "knight") {
-//            System.out.println("I should implement logic for knight move validation");
-//        } else if (pieceType == "bishop") {
-//            System.out.println("I should implement logic for bishop move validation");
-//        } else if (pieceType == "queen") {
-//            System.out.println("I should implement logic for queen move validation");
-//        } else if (pieceType == "king") {
-//            System.out.println("I should implement logic for king move validation");
-//        }
+        boolean isValid = false;
+        if(pieceType == "pawn"){  //TODO: this block of code should become uncommented as I implement more and more piece types.
+            System.out.println("I should implement logic for pawn move validation");
+            isValid = false;
+        } else if (pieceType == "rook") {
+            isValid = validateRookMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition);
+        } else if (pieceType == "knight") {
+            isValid = validateKnightMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition);
+        } else if (pieceType == "bishop") {
+            System.out.println("I should implement logic for bishop move validation");
+            isValid = false;
+        } else if (pieceType == "queen") {
+            System.out.println("I should implement logic for queen move validation");
+            isValid = false;
+        } else if (pieceType == "king") {
+            System.out.println("I should implement logic for king move validation");
+            isValid = false;
+        }
 
-        isValid = validateRookMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition);
+//        isValid = validateRookMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition); //TODO: this will need deletion
 
         //Is the move valid ?
         if(isValid == false){
@@ -107,32 +120,7 @@ public class GameLogic {
                     System.out.println("Sequence will be: " + sequence);
                 }
             }
-
-            
-
         }
-
-
-
-//        //TODO: This function will need refactoring. It is not ok to call slay that calls placePiece. When will I validate the move?
-//        //IS THE SQUARE THAT I HAVE CHOSEN EMPTY?
-//        if (board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == false) { //<- i think here should validation happen but i am not sure
-//            validateRookMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition); //TODO: delete this line
-//            placePiece(targetRowPosition, targetColumnPosition); //if empty, I will place my piece here
-//            System.out.println("Sequence will be: " + sequence); //should be 1 now
-//        } else {
-//            //SO THE SQUARE IS NOT EMPTY. DOES THE COLOR OF THE PIECE ON THIS SQUARE MATCH THE ONE THAT I HAVE IN MY HAND ?
-//            if ( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() == this.selectedPiece.isWhite() ) {
-//                System.out.println("I can't place a piece of my own over another piece of my own");
-//                System.out.println("I need to reselect my piece");
-//                ungrabPiece();
-//                System.out.println("Sequence will be: " + sequence);
-//            } else {
-//                System.out.println("I will capture here -> I need to write the logic for that");
-//                slay(targetRowPosition, targetColumnPosition); //TODO: for example here, when this is called the enemy is first slain and then i place the piece
-//                System.out.println("Sequence will be: " + sequence);
-//            }
-//        }
     }
 
     public void slay(int rowPosition, int columnPosition){
@@ -266,5 +254,52 @@ public class GameLogic {
     }
 
 
+
+    //Possible Moves of rook relative to current position
+    public boolean validateKnightMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
+
+
+        ArrayList<Integer, Integer> a = new ArrayList<>();
+
+
+//        ArrayList<Integer> canHopHereRow = new ArrayList<>();
+//        ArrayList<Integer> canHopHereCol = new ArrayList<>();
+//
+//        canHopHereRow.add(currentRowPosition-2);
+//        canHopHereRow.add(currentRowPosition-1);
+//        canHopHereRow.add(currentRowPosition+1);
+//        canHopHereRow.add(currentRowPosition+2);
+//
+//        canHopHereCol.add(currentColumnPosition-2);
+//        canHopHereCol.add(currentColumnPosition-1);
+//        canHopHereCol.add(currentColumnPosition+1);
+//        canHopHereCol.add(currentColumnPosition+2);
+//
+//        int validate = 0;
+//        int rowPosition = -1;
+//        int colPosition = -1;
+//        for( int i=0; i<canHopHereRow.size(); i++){
+////            System.out.println("Hai sa vedem ce valori comparam");
+////            System.out.println(canHopHereRow.get(i)+" cu "+targetRowPosition);
+//            if(canHopHereRow.get(i) == targetRowPosition) {
+//                rowPosition = i;
+//            }
+//        }
+//        for( int i=0; i<canHopHereCol.size(); i++){
+//            if(canHopHereCol.get(i) == targetColumnPosition) {
+//                colPosition = i;
+//            }
+//        }
+//
+//        if(canHopHereRow.get(rowPosition) == targetRowPosition && canHopHereCol.get(colPosition) == targetColumnPosition){
+//            validate++;
+//        }
+
+        if (validate < 1 ){
+            return false;
+        } else {
+            return true;
+        }
+    };
 }
 

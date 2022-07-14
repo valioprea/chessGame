@@ -61,14 +61,20 @@ public class Board {
 
     public void initializePieces(GameLogic gameLogic, Square[][] allSquares) throws IOException {
 
+        //WHITE PIECES
         this.allSquares[8][1].setContainsPiece(true);
         this.allSquares[8][1].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, allSquares,8,1));
-
         this.allSquares[8][8].setContainsPiece(true);
         this.allSquares[8][8].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, allSquares,8,8));
+        this.allSquares[8][2].setContainsPiece(true);
+        this.allSquares[8][2].add(new Knight("knight", new ImageIcon(this.pieceImageList.getListOfPieceImages()[3]), gameLogic, true, allSquares,8,2));
 
+
+        //BLACK PIECES
         this.allSquares[1][8].setContainsPiece(true);
         this.allSquares[1][8].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[10]), gameLogic, false, allSquares,1,8));
+        this.allSquares[1][1].setContainsPiece(true);
+        this.allSquares[1][1].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[10]), gameLogic, false, allSquares,1,1));
 
         gameFrame.setVisible(true);
     }
