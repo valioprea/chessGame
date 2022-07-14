@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class Board {
     ListOfPieces pieceImageList = new ListOfPieces();
-    public Square[][] allSquares = new Square[8][8];
+    public Square[][] allSquares = new Square[9][9];
     public String printedPosition;
     public int squareDimension = 60;
     public boolean alternativeColor = true;
@@ -18,9 +18,9 @@ public class Board {
 
         int generatedSquare = 1; //will be a number from 1 to 64
         int k = 7;
-        for( int j=0; j<8; j++){
+        for( int i=1; i<=8; i++){
             alternativeColor = !alternativeColor;
-            for ( int i=0; i<8; i++) {
+            for ( int j=1; j<=8; j++) {
                 this.allSquares[i][j] = new Square(gameLogic);    // INITIALIZING A NEW SQUARE OBJECT !!!
                 this.allSquares[i][j].setLayout(new BorderLayout());
                 if(alternativeColor == true) {
@@ -30,11 +30,12 @@ public class Board {
                         this.allSquares[i][j].setBackground(new Color(210,147,88));
                         alternativeColor = true;
                     }
-                this.allSquares[i][j].setBounds(i*60,j*60,squareDimension,squareDimension); //set dims and position for each square
-                this.allSquares[i][j].setxPosition(Positions.COLUMNS[i]); //sets chess letter for square
-                this.allSquares[i][j].setyPosition(Positions.ROWS[k]); //set chess number for square
+                this.allSquares[i][j].setBounds(j*60,i*60,squareDimension,squareDimension); //set dims and position for each square
+                this.allSquares[i][j].setRowPosition(i);
+                this.allSquares[i][j].setColumnPosition(j);
 
-                this.printedPosition = Positions.COLUMNS[i]+""+Positions.ROWS[k]; //transforms to string to write on board
+//                this.printedPosition = Positions.COLUMNS[i]+""+Positions.ROWS[k]; //transforms to string to write on board. JUST VISUAL
+                this.printedPosition = i+""+j;
 
                 String generatedSquareString = String.valueOf(generatedSquare);
                 JLabel positionLabel = new JLabel(generatedSquareString+"  "+this.printedPosition);
@@ -44,9 +45,9 @@ public class Board {
             }
             k--;
         };
-        for( int j=0; j<8; j++){
-            for ( int i=0; i<8; i++) {
-                gameFrame.add(allSquares[j][i]); //add squares to game frame
+        for( int i=1; i<=8; i++){
+            for ( int j=1; j<=8; j++) {
+                gameFrame.add(allSquares[i][j]); //add squares to game frame
             }
         }
         gameFrame.setTitle("VALI's CHESS GAME");
@@ -60,11 +61,14 @@ public class Board {
 
     public void initializePieces(GameLogic gameLogic, Square[][] allSquares) throws IOException {
 
-        this.allSquares[0][7].setContainsPiece(true);
-        this.allSquares[0][7].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, allSquares,0,7));
+        this.allSquares[8][1].setContainsPiece(true);
+        this.allSquares[8][1].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, allSquares,8,1));
 
-        this.allSquares[7][7].setContainsPiece(true);
-        this.allSquares[7][7].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, allSquares,7,7));
+        this.allSquares[8][8].setContainsPiece(true);
+        this.allSquares[8][8].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, allSquares,8,8));
+
+        this.allSquares[1][8].setContainsPiece(true);
+        this.allSquares[1][8].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[10]), gameLogic, false, allSquares,1,8));
 
         gameFrame.setVisible(true);
     }

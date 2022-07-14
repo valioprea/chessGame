@@ -1,22 +1,22 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class Square extends JPanel {
 
     private GameLogic gameLogic;
-    public char xPosition;
-    public int yPosition;
+
+    public int rowPosition; //(ROW, COLUMN)
+    public int columnPosition; //(ROW, COLUMN)
 
     private boolean containsPiece=false;
 
-    public void setxPosition(char xPosition) {
-        this.xPosition = xPosition;
+    public void setRowPosition(int rowPosition) {
+        this.rowPosition = rowPosition;
     }
 
-    public void setyPosition(int yPosition) {
-        this.yPosition = yPosition;
+    public void setColumnPosition(int columnPosition) {
+        this.columnPosition = columnPosition;
     }
 
     public boolean getContainsPiece() {
@@ -27,12 +27,12 @@ public class Square extends JPanel {
         this.containsPiece = containsPiece;
     }
 
-    public char getxPosition() {
-        return xPosition;
+    public int getRowPosition() {
+        return rowPosition;
     }
 
-    public int getyPosition() {
-        return yPosition;
+    public int getColumnPosition() {
+        return columnPosition;
     }
 
     public Square(GameLogic gameLogic){
@@ -43,8 +43,8 @@ public class Square extends JPanel {
     @Override
     public String toString() {
         return "Square{" +
-                "xPosition=" + xPosition +
-                ", yPosition=" + yPosition +
+                "xPosition=" + rowPosition +
+                ", yPosition=" + columnPosition +
                 '}';
     }
 
@@ -72,22 +72,10 @@ public class Square extends JPanel {
 
                 } else {
 
-                    gameLogic.whyAmIPressing(getxPosition(),getyPosition());
+                    gameLogic.whyAmIPressing(getRowPosition(), getColumnPosition());
                     System.out.println("Sequence will be: "+gameLogic.getSequence());
                 }
 
-
-
-//                if(getContainsPiece() == true ){                                //TODO: cum functioneaza aceasta metoda fara this. in fata ?
-//                    System.out.println("i have a piece");
-//                    //grab a hold of the piece inside the square -> ((Piece)((Square)e.getComponent()).getComponents()[1])
-//                    System.out.println("Selected piece: " +
-//                            ((Piece)((Square)e.getComponent()).getComponents()[1]));
-//
-//                } else {
-//                    System.out.println("i don't have a piece");
-//                    gameLogic.placePiece(getxPosition(),getyPosition());
-//                }
 
             }
 
@@ -98,7 +86,7 @@ public class Square extends JPanel {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-
+//                e.getComponent().setBackground(Color.RED);
             }
 
             @Override

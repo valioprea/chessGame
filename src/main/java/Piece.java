@@ -1,7 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public class Piece extends JLabel {
 
@@ -10,38 +7,37 @@ public class Piece extends JLabel {
     public GameLogic gameLogic;
     public boolean isWhite;
     public boolean blocksCheck;
-    public int squaresArrayColumnPosition;
-    public int squaresArrayRowPosition;
+    public int rowPosition;
+    public int columnPosition;
 
-    public Piece(String name, Icon icon, GameLogic gameLogic, boolean isWhite, Square[][] allSquares, int squaresArrayColumnPosition, int squaresArrayRowPosition) {
+    public Piece(String name, Icon icon, GameLogic gameLogic, boolean isWhite, Square[][] allSquares, int rowPosition, int columnPosition) {
         super(icon);
         this.name = name;
         this.gameLogic = gameLogic;
         this.isWhite = isWhite;
         this.allSquares = allSquares;
-        this.squaresArrayColumnPosition = squaresArrayColumnPosition;
-        this.squaresArrayRowPosition = squaresArrayRowPosition;
-//        this.eventHandler();
+        this.rowPosition = rowPosition;
+        this.columnPosition = columnPosition;
     }
 
     public boolean isWhite() {
         return isWhite;
     }
 
-    public int getSquaresArrayColumnPosition() {
-        return squaresArrayColumnPosition;
+    public int getRowPosition() {
+        return rowPosition;
     }
 
-    public int getSquaresArrayRowPosition() {
-        return squaresArrayRowPosition;
+    public int getColumnPosition() {
+        return columnPosition;
     }
 
-    public void setSquaresArrayColumnPosition(int squaresArrayColumnPosition) {
-        this.squaresArrayColumnPosition = squaresArrayColumnPosition;
+    public void setRowPosition(int rowPosition) {
+        this.rowPosition = rowPosition;
     }
 
-    public void setSquaresArrayRowPosition(int squaresArrayRowPosition) {
-        this.squaresArrayRowPosition = squaresArrayRowPosition;
+    public void setColumnPosition(int columnPosition) {
+        this.columnPosition = columnPosition;
     }
 
     @Override
@@ -49,34 +45,4 @@ public class Piece extends JLabel {
         return this.name;
     }
 
-//    private void eventHandler(){
-//        this.addMouseListener(new MouseListener() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                System.out.println("clicked");
-//                System.out.println(e.getComponent());
-//                gameLogic.grabPiece( (Piece)e.getComponent() );
-//            }
-//
-//            @Override
-//            public void mousePressed(MouseEvent e) {
-//
-//            }
-//
-//            @Override
-//            public void mouseReleased(MouseEvent e) {
-//
-//            }
-//
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//
-//            }
-//
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-//
-//            }
-//        });
-//    };
 }
