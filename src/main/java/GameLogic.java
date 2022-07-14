@@ -84,5 +84,41 @@ public class GameLogic {
     }
 
 
+    public void getPossibleMovesOfRook(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
+
+        int rowNorth;
+        int colNorth;
+        int[] posNorth = new int[2];
+        int rowSouth;
+        int colSouth;
+        int[] posSouth = new int[2];
+        int rowWest;
+        int colWest;
+        int[] posWest = new int[2];
+        int rowEast;
+        int colEast;
+        int[] posEast = new int[2];
+
+        //Cum arata un square ? uite asa -> board.getAllSquares()[rowPosition][columnPosition]
+
+        //INCERC SPRE EST
+        int j = currentColumnPosition+1;
+        while ( j <= 8 ){
+
+            //IS THERE A PIECE?
+            if (board.getAllSquares()[currentRowPosition][j].getContainsPiece() == true){
+
+                //IS THE EXISTING PIECE SAME COLOR AS MINE?
+                if(((Piece) board.getAllSquares()[currentRowPosition][j].getComponents()[1]).isWhite() == this.selectedPiece.isWhite())){
+    
+                }
+
+            }
+
+
+        }
+    }
+
+
 }
 
