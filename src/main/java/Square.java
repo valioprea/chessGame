@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -7,12 +8,6 @@ public class Square extends JPanel {
     private GameLogic gameLogic;
     public char xPosition;
     public int yPosition;
-
-    public Piece piece;
-
-    public void setPiece(Piece piece) {
-        this.piece = piece;
-    }
 
     private boolean containsPiece=false;
 
@@ -62,12 +57,43 @@ public class Square extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                gameLogic.whyAmIPressing(getxPosition(),getyPosition());
+//                gameLogic.whyAmIPressing(getxPosition(),getyPosition());
+
+                if(gameLogic.getSequence() == 1) {
+
+                    if(getContainsPiece() == true) {
+                        System.out.println("i have a piece");
+                        gameLogic.grabPiece(((Piece)((Square)e.getComponent()).getComponents()[1]));
+                        System.out.println("Sequence will be: "+gameLogic.getSequence());
+                    } else {
+                        System.out.println("I was just pressing on the board (from piece)");
+                        System.out.println("Sequence will be: "+gameLogic.getSequence());
+                    }
+
+                } else {
+
+                    gameLogic.whyAmIPressing(getxPosition(),getyPosition());
+                    System.out.println("Sequence will be: "+gameLogic.getSequence());
+                }
+
+
+
+//                if(getContainsPiece() == true ){                                //TODO: cum functioneaza aceasta metoda fara this. in fata ?
+//                    System.out.println("i have a piece");
+//                    //grab a hold of the piece inside the square -> ((Piece)((Square)e.getComponent()).getComponents()[1])
+//                    System.out.println("Selected piece: " +
+//                            ((Piece)((Square)e.getComponent()).getComponents()[1]));
+//
+//                } else {
+//                    System.out.println("i don't have a piece");
+//                    gameLogic.placePiece(getxPosition(),getyPosition());
+//                }
+
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                gameLogic.ungrabPiece();
+//                gameLogic.ungrabPiece();
             }
 
             @Override

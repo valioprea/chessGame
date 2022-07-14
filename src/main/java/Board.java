@@ -59,9 +59,10 @@ public class Board {
 
 
     public void initializePieces(GameLogic gameLogic, Square[][] allSquares) throws IOException {
+
         this.allSquares[0][7].setContainsPiece(true);
-//        this.allSquares[0][7].setPiece();
         this.allSquares[0][7].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, allSquares,0,7));
+
         this.allSquares[7][7].setContainsPiece(true);
         this.allSquares[7][7].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, allSquares,7,7));
 

@@ -10,6 +10,7 @@ public class Main {
 
         board.initializeSquares(gameLogic);
         board.initializePieces(gameLogic, board.getAllSquares());
+
         gameLogic.setFrame(board.gameFrame);
     }
 }

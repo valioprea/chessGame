@@ -21,7 +21,7 @@ public class Piece extends JLabel {
         this.allSquares = allSquares;
         this.squaresArrayColumnPosition = squaresArrayColumnPosition;
         this.squaresArrayRowPosition = squaresArrayRowPosition;
-        this.eventHandler();
+//        this.eventHandler();
     }
 
     public boolean isWhite() {
@@ -36,39 +36,47 @@ public class Piece extends JLabel {
         return squaresArrayRowPosition;
     }
 
+    public void setSquaresArrayColumnPosition(int squaresArrayColumnPosition) {
+        this.squaresArrayColumnPosition = squaresArrayColumnPosition;
+    }
+
+    public void setSquaresArrayRowPosition(int squaresArrayRowPosition) {
+        this.squaresArrayRowPosition = squaresArrayRowPosition;
+    }
+
     @Override
     public String getName() {
         return this.name;
     }
 
-    private void eventHandler(){
-        this.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                System.out.println("clicked");
-                System.out.println(e.getComponent());
-                gameLogic.grabPiece((Piece)e.getComponent());
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        });
-    };
+//    private void eventHandler(){
+//        this.addMouseListener(new MouseListener() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                System.out.println("clicked");
+//                System.out.println(e.getComponent());
+//                gameLogic.grabPiece( (Piece)e.getComponent() );
+//            }
+//
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void mouseReleased(MouseEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//
+//            }
+//        });
+//    };
 }
