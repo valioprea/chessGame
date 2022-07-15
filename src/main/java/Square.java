@@ -74,7 +74,6 @@ public class Square extends JPanel {
 
                 } else {
                     gameLogic.whyAmIPressing(getRowPosition(), getColumnPosition());
-//                    System.out.println("Sequence will be: "+gameLogic.getSequence());
                 }
 
 
