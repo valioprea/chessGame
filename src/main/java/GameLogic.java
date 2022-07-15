@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
 //THIS SHOULD PROBABLY BECOME SOME SORT OF CLASS THAT CONTAINS ALL METHODS WHO GENERATE MOVEMENT LOGIC IN THE FUTURE.
@@ -13,50 +12,74 @@ public class GameLogic {
     public Piece selectedPiece;
     public int sequence = 1;
 
+    public void setFrame(JFrame gameFrame) {
+        this.frame = gameFrame;
+    }
     public void setSequence(int sequence) {
         this.sequence = sequence;
     }
-
     public int getSequence() {
         return sequence;
     }
-
     public GameLogic(Board board) {
         this.board = board;
     }
-
     public String getGAMETURN() {
         return GAMETURN;
     }
-
     public void setGAMETURN(String GAMETURN) {
         this.GAMETURN = GAMETURN;
     }
-
     public Piece getPiece() {
         return selectedPiece;
     }
+
+
 
     public void grabPiece(Piece selectedPiece) {
         this.selectedPiece = selectedPiece;
         this.setSequence(2);
         System.out.println("I selected a "+this.selectedPiece.getName() + " from position: on ROW "+selectedPiece.getPiecePosition().getRowPosition()+" on column: "+selectedPiece.getPiecePosition().getColPosition());
         System.out.println("Sequence will be "+sequence+": you need to place the piece somewhere");
-
-        System.out.println("TEST"); //TODO: DELETE ME
-        System.out.println(selectedPiece.getPiecePosition());
     }
-
     public void ungrabPiece() {
         this.selectedPiece = null;
         this.setSequence(1);
     }
+    public void finishTurn(){
+        //Who did finish the turn ?
+        if( this.selectedPiece.isWhite() == true ){
+            //white finished the turn
+            //deactivate white pieces + activate black pieces
+            getAllPiecesOfThisColor(true).forEach(piece -> {
+                piece.setCanBeMoved(false);
+            });
+            getAllPiecesOfThisColor(false).forEach(piece -> {
+                piece.setCanBeMoved(true);
+            });
+            this.setGAMETURN("black"); //-> black is next
+            System.out.println("Black moves now ->");
+        } else {
+            //black finished the turn
+            //deactivate black pieces + activate white pieces
+            getAllPiecesOfThisColor(false).forEach(piece -> {
+                piece.setCanBeMoved(false);
+            });
+            getAllPiecesOfThisColor(true).forEach(piece -> {
+                piece.setCanBeMoved(true);
+            });
+            this.setGAMETURN("white"); //-> white is next
+            System.out.println("White moves now ->");
+        }
+    }
+
 
     //TODO: I should probably implement some sort of board reader before each move, to use it to see each king in relationship with all oppponents pieces, if it is in check or not
     //TODO: setCheckMate, Draw (move repetition/ noCheckmate in 50 moves / insufficient material), StaleMate
 
-    public void placePiece(int rowPosition, int columnPosition) {
 
+
+    public void placePiece(int rowPosition, int columnPosition) {
         //TODO: I will need to think about how to properly do this below:
 //        if(this.selectedPiece.getName() == "rook"){
 //            ((Rook)this.selectedPiece).setRookHasMovedBeforeCastling(true);
@@ -79,14 +102,13 @@ public class GameLogic {
         ungrabPiece();
     }
 
-    public void setFrame(JFrame gameFrame) {
-        this.frame = gameFrame;
-    }
+
 
     //TODO: this function is a mess
     public void whyAmIPressing(int targetRowPosition, int targetColumnPosition) {
+
         //I got a piece in hand, just pressed a square, I want to move my piece there.
-        validateRookMove(this.selectedPiece.getPiecePosition() ,targetRowPosition,targetColumnPosition);
+        getRookPositions(this.selectedPiece.getPiecePosition() ,targetRowPosition,targetColumnPosition);
         //What kind of piece do I have in my hand ?
         String pieceType = selectedPiece.getName();
         boolean isValid = false;
@@ -95,9 +117,11 @@ public class GameLogic {
             isValid = false;
         } else if (pieceType == "rook") {
 
-            if( validateRookMove(this.selectedPiece.getPiecePosition() ,targetRowPosition,targetColumnPosition).size() != 0) {
-
-                for (Position target : validateRookMove(this.selectedPiece.getPiecePosition() ,targetRowPosition,targetColumnPosition) ){
+            //Do i have any computed positions for my rook ? ->I have a list of all of them.
+            if( getRookPositions(this.selectedPiece.getPiecePosition() ,targetRowPosition,targetColumnPosition).size() != 0) {
+                //Going through the list of positions
+                for (Position target : getRookPositions(this.selectedPiece.getPiecePosition() ,targetRowPosition,targetColumnPosition) ){
+                    //Is my selected position found among the computed positions ?
                     if( target.getRowPosition() == targetRowPosition && target.getColPosition() == targetColumnPosition ) {
                         isValid = true;                                                                                     //TODO: HERE I NEED TO ASK MYSELF IF MY TARGET IS A KING !!!!
                     }
@@ -140,15 +164,15 @@ public class GameLogic {
     }
 
 
-
-
+    //TODO: learn how to change color of TODO lol
     public void slay(int rowPosition, int columnPosition){
         board.getAllSquares()[rowPosition][columnPosition].remove(1);
 //        ((Piece) board.getAllSquares()[rowPosition][rowPosition].getComponents()[1]) = null; //TODO: how do I remove a piece correctly ?
         placePiece(rowPosition, columnPosition);
     }
 
-    //TODO: check these two functions below
+
+    //TODO: What do i do with this ? below:
     //UTILITY - get all pieces of the same color true=WHITE & false=BLACK
     public ArrayList<Piece> getAllPiecesOfThisColor(boolean isWhite){
 
@@ -176,46 +200,15 @@ public class GameLogic {
 
     };
 
-    public void finishTurn(){
-    //Who did finish the turn ?
-        if( this.selectedPiece.isWhite() == true ){
-            //white finished the turn
-            //deactivate white pieces + activate black pieces
-            getAllPiecesOfThisColor(true).forEach(piece -> {
-                piece.setCanBeMoved(false);
-            });
-            getAllPiecesOfThisColor(false).forEach(piece -> {
-                piece.setCanBeMoved(true);
-            });
-            this.setGAMETURN("black"); //-> black is next
-            System.out.println("Black moves now ->");
-        } else {
-            //black finished the turn
-            //deactivate black pieces + activate white pieces
-            getAllPiecesOfThisColor(false).forEach(piece -> {
-                piece.setCanBeMoved(false);
-            });
-            getAllPiecesOfThisColor(true).forEach(piece -> {
-                piece.setCanBeMoved(true);
-            });
-            this.setGAMETURN("white"); //-> white is next
-            System.out.println("White moves now ->");
-        }
-    }
+        //TODO: COMPUTATIONS #######################################################################################################################################################
 
-
-
-
-
-    //TODO: VALIDATIONS VALIDATIONS VALIDATIONS VALIDATIONS VALIDATIONS VALIDATIONS VALIDATIONS VALIDATIONS VALIDATIONS VALIDATIONS VALIDATIONS VALIDATIONS READ BELOW THIS LINE FOR THOUGHTS
-        //TODO: i need to check for all pieces that a move which will capture the opponent king is not valid
 
     //How does a square look like: -> board.getAllSquares()[rowPosition][columnPosition]
     //How does a piece look like: -> ((Piece) board.getAllSquares()[i][j].getComponents()[1])
 
     //GET Possible moves of rook relative to current position
     //TODO: IMPORTANT!!! -> this method will also return an attacked position in which the opponent king is
-    public ArrayList<Position> validateRookMove(Position currentPosition, int targetRowPosition, int targetColumnPosition){
+    public ArrayList<Position> getRookPositions(Position currentPosition, int targetRowPosition, int targetColumnPosition){
         //targets - an array of positions that are attacked by the rook
         ArrayList<Position> targets = new ArrayList<>();
 
@@ -304,7 +297,6 @@ public class GameLogic {
         }
         return targets;
     }
-
 
     //Possible moves of rook relative to current position
     public boolean validateKnightMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
@@ -418,8 +410,6 @@ public class GameLogic {
             return false;
         }
     };
-
-
 
     //Possible moves of bishop relative to current position
     public boolean validateBishopMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
@@ -558,7 +548,6 @@ public class GameLogic {
             return true;
         }
     };
-
 
     //Possible moves of queen relative to current position
 //    public boolean validateQueenMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
