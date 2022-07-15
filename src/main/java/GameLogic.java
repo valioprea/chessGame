@@ -78,7 +78,7 @@ public class GameLogic {
         String pieceType = selectedPiece.getName();
 
         boolean isValid = false;
-        if(pieceType == "pawn"){  //TODO: this block of code should become uncommented as I implement more and more piece types.
+        if(pieceType == "pawn"){
             System.out.println("I should implement logic for pawn move validation");
             isValid = false;
         } else if (pieceType == "rook") {
@@ -95,8 +95,6 @@ public class GameLogic {
             System.out.println("I should implement logic for king move validation");
             isValid = false;
         }
-
-//        isValid = validateRookMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition); //TODO: this will need deletion
 
         //Is the move valid ?
         if(isValid == false){
@@ -128,6 +126,11 @@ public class GameLogic {
         placePiece(rowPosition, columnPosition);
     }
 
+    //TODO: VALIDATIONS VALIDATIONS VALIDATIONS READ BELOW THIS LINE FOR THOUGHTS
+        //TODO: i need to check for all pieces that a move which will capture the opponent king is not valid
+
+    //How does a square look like: -> board.getAllSquares()[rowPosition][columnPosition]
+    //How does a piece look like: -> ((Piece) board.getAllSquares()[i][j].getComponents()[1])
 
     //Possible Moves of rook relative to current position
     public boolean validateRookMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
@@ -136,9 +139,6 @@ public class GameLogic {
         ArrayList<Integer> westPossibility = new ArrayList<>(); //these are only values for column positions !!
         ArrayList<Integer> northPossibility = new ArrayList<>(); //these are only values for row positions !!
         ArrayList<Integer> southPossibility = new ArrayList<>(); //these are only values for row positions !!
-
-        //How does a square look like: -> board.getAllSquares()[rowPosition][columnPosition]
-        //How does a piece look like: -> ((Piece) board.getAllSquares()[i][j].getComponents()[1])
 
         //LOOK TO THE EAST -> so a possible EASTERN POSITION should be any combination of: currentRowPosition, eastPossibility[index]
         int j = currentColumnPosition+1;
@@ -258,48 +258,117 @@ public class GameLogic {
     //Possible Moves of rook relative to current position
     public boolean validateKnightMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
 
+        Position[] possiblePositions = new Position[8];
 
-        ArrayList<Integer, Integer> a = new ArrayList<>();
+        int validate=0;
+        //IS THE TARGET SQUARE REACHABLE FOR THE KNIGHT ?
+        if( currentRowPosition-2 >= 1 && currentColumnPosition-1 >=1 && currentRowPosition-2 == targetRowPosition && currentColumnPosition-1 == targetColumnPosition){ //physical validation for the 'L move'
+//            possiblePositions[0].setRowPosition(currentRowPosition-2);
+//            possiblePositions[0].setColPosition(currentColumnPosition-1);
 
+            //DOES THE SQUARE CONTAIN A PIECE ?
+            if(board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == true){
+                //IS THE COLOR OF THAT PIECE AS THE ONE I HAVE IN HAND?
+                if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() != this.selectedPiece.isWhite()  ){
+                    validate++;
+                }
+            } else {
+                validate++;
+            }
+        }
+        if( currentRowPosition-2 >= 1 && currentColumnPosition+1 <=8 && currentRowPosition-2 == targetRowPosition && currentColumnPosition+1 == targetColumnPosition ){
+//            possiblePositions[1].setRowPosition(currentRowPosition-2);
+//            possiblePositions[1].setColPosition(currentColumnPosition+1);
+            if(board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == true){
+                //IS THE COLOR OF THAT PIECE AS THE ONE I HAVE IN HAND?
+                if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() != this.selectedPiece.isWhite()  ){
+                    validate++;
+                }
+            } else {
+                validate++;
+            }
+        }
+        if( currentRowPosition-1 >= 1 && currentColumnPosition+2 <=8 && currentRowPosition-1 == targetRowPosition && currentColumnPosition+2 == targetColumnPosition ){
+//            possiblePositions[2].setRowPosition(currentRowPosition-1);
+//            possiblePositions[2].setColPosition(currentColumnPosition+2);
+            if(board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == true){
+                //IS THE COLOR OF THAT PIECE AS THE ONE I HAVE IN HAND?
+                if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() != this.selectedPiece.isWhite()  ){
+                    validate++;
+                }
+            } else {
+                validate++;
+            }
+        }
+        if( currentRowPosition+1 <= 8 && currentColumnPosition+2 <=8 && currentRowPosition+1 == targetRowPosition && currentColumnPosition+2 == targetColumnPosition ){
+//            possiblePositions[3].setRowPosition(currentRowPosition+1);
+//            possiblePositions[3].setColPosition(currentColumnPosition+2);
+            if(board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == true){
+                //IS THE COLOR OF THAT PIECE AS THE ONE I HAVE IN HAND?
+                if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() != this.selectedPiece.isWhite()  ){
+                    validate++;
+                }
+            } else {
+                validate++;
+            }
+        }
+        if( currentRowPosition+2 <= 8 && currentColumnPosition+1 <=8 && currentRowPosition+2 == targetRowPosition && currentColumnPosition+1 == targetColumnPosition ){
+//            possiblePositions[4].setRowPosition(currentRowPosition+2);
+//            possiblePositions[4].setColPosition(currentColumnPosition+1);
+            if(board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == true){
+                //IS THE COLOR OF THAT PIECE AS THE ONE I HAVE IN HAND?
+                if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() != this.selectedPiece.isWhite()  ){
+                    validate++;
+                }
+            } else {
+                validate++;
+            }
+        }
+        if( currentRowPosition+2 <= 8 && currentColumnPosition-1 >=1 && currentRowPosition+2 == targetRowPosition && currentColumnPosition-1 == targetColumnPosition ){
+//            possiblePositions[5].setRowPosition(currentRowPosition+2);
+//            possiblePositions[5].setColPosition(currentColumnPosition-1);
+            if(board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == true){
+                //IS THE COLOR OF THAT PIECE AS THE ONE I HAVE IN HAND?
+                if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() != this.selectedPiece.isWhite()  ){
+                    validate++;
+                }
+            } else {
+                validate++;
+            }
+        }
+        if( currentRowPosition+1 <= 8 && currentColumnPosition-2 >=1 && currentRowPosition+1 == targetRowPosition && currentColumnPosition-2 == targetColumnPosition ){
+//            possiblePositions[6].setRowPosition(currentRowPosition+1);
+//            possiblePositions[6].setColPosition(currentColumnPosition-2);
+            if(board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == true){
+                //IS THE COLOR OF THAT PIECE AS THE ONE I HAVE IN HAND?
+                if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() != this.selectedPiece.isWhite()  ){
+                    validate++;
+                }
+            } else {
+                validate++;
+            }
+        }
+        if( currentRowPosition-1 >= 1 && currentColumnPosition-2 >=1 && currentRowPosition-1 == targetRowPosition && currentColumnPosition-2 == targetColumnPosition ){
+//            possiblePositions[7].setRowPosition(currentRowPosition-1);
+//            possiblePositions[7].setColPosition(currentColumnPosition-2);
+            if(board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == true){
+                //IS THE COLOR OF THAT PIECE AS THE ONE I HAVE IN HAND?
+                if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() != this.selectedPiece.isWhite()  ){
+                    validate++;
+                }
+            } else {
+                validate++;
+            }
+        }
 
-//        ArrayList<Integer> canHopHereRow = new ArrayList<>();
-//        ArrayList<Integer> canHopHereCol = new ArrayList<>();
-//
-//        canHopHereRow.add(currentRowPosition-2);
-//        canHopHereRow.add(currentRowPosition-1);
-//        canHopHereRow.add(currentRowPosition+1);
-//        canHopHereRow.add(currentRowPosition+2);
-//
-//        canHopHereCol.add(currentColumnPosition-2);
-//        canHopHereCol.add(currentColumnPosition-1);
-//        canHopHereCol.add(currentColumnPosition+1);
-//        canHopHereCol.add(currentColumnPosition+2);
-//
-//        int validate = 0;
-//        int rowPosition = -1;
-//        int colPosition = -1;
-//        for( int i=0; i<canHopHereRow.size(); i++){
-////            System.out.println("Hai sa vedem ce valori comparam");
-////            System.out.println(canHopHereRow.get(i)+" cu "+targetRowPosition);
-//            if(canHopHereRow.get(i) == targetRowPosition) {
-//                rowPosition = i;
-//            }
-//        }
-//        for( int i=0; i<canHopHereCol.size(); i++){
-//            if(canHopHereCol.get(i) == targetColumnPosition) {
-//                colPosition = i;
-//            }
-//        }
-//
-//        if(canHopHereRow.get(rowPosition) == targetRowPosition && canHopHereCol.get(colPosition) == targetColumnPosition){
-//            validate++;
-//        }
-
-        if (validate < 1 ){
-            return false;
-        } else {
+        if(validate != 0){
             return true;
+        } else {
+            return false;
         }
     };
+
+
+    //below is the class' brackets
 }
 
