@@ -41,6 +41,7 @@ public class GameLogic {
     }
 
     //TODO: I should probably implement some sort of board reader before each move, to use it to see each king in relationship with all oppponents pieces, if it is in check or not
+    //TODO: setCheckMate, Draw (move repetition/ noCheckmate in 50 moves / insufficient material), StaleMate
 
     public void placePiece(int rowPosition, int columnPosition) {
 
@@ -86,11 +87,9 @@ public class GameLogic {
         } else if (pieceType == "knight") {
             isValid = validateKnightMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition);
         } else if (pieceType == "bishop") {
-            System.out.println("I should implement logic for bishop move validation");
-            isValid = false;
+            isValid = validateBishopMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition);
         } else if (pieceType == "queen") {
-            System.out.println("I should implement logic for queen move validation");
-            isValid = false;
+            isValid = validateQueenMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition);
         } else if (pieceType == "king") {
             System.out.println("I should implement logic for king move validation");
             isValid = false;
@@ -121,10 +120,18 @@ public class GameLogic {
         }
     }
 
+
+
+
     public void slay(int rowPosition, int columnPosition){
         board.getAllSquares()[rowPosition][columnPosition].remove(1);
+//        ((Piece) board.getAllSquares()[rowPosition][rowPosition].getComponents()[1]) = null; //TODO: how do I remove a piece correctly ?
         placePiece(rowPosition, columnPosition);
     }
+
+
+
+
 
     //TODO: VALIDATIONS VALIDATIONS VALIDATIONS READ BELOW THIS LINE FOR THOUGHTS
         //TODO: i need to check for all pieces that a move which will capture the opponent king is not valid
@@ -132,7 +139,7 @@ public class GameLogic {
     //How does a square look like: -> board.getAllSquares()[rowPosition][columnPosition]
     //How does a piece look like: -> ((Piece) board.getAllSquares()[i][j].getComponents()[1])
 
-    //Possible Moves of rook relative to current position
+    //Possible moves of rook relative to current position
     public boolean validateRookMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
 
         ArrayList<Integer> eastPossibility = new ArrayList<>(); //these are only values for column positions !!
@@ -253,9 +260,7 @@ public class GameLogic {
         }
     }
 
-
-
-    //Possible Moves of rook relative to current position
+    //Possible moves of rook relative to current position
     public boolean validateKnightMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
 
         Position[] possiblePositions = new Position[8];
@@ -367,6 +372,160 @@ public class GameLogic {
             return false;
         }
     };
+
+    //Possible moves of bishop relative to current position
+    public boolean validateBishopMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
+
+        ArrayList<Position> northEastPossibilities = new ArrayList<>();
+        ArrayList<Position> southEastPossibilities = new ArrayList<>();
+        ArrayList<Position> southWestPossibilities = new ArrayList<>();
+        ArrayList<Position> northWestPossibilities = new ArrayList<>();
+
+        //LOOK NORTH EAST
+        int ner = currentRowPosition-1; //ner= north-east row
+        int nec = currentColumnPosition+1; //nec= north-east column
+        while( ner>=1 && nec <=8 ){
+            //IS THERE A PIECE?
+            if( board.getAllSquares()[ner][nec].getContainsPiece()==true ){
+                //IS THAT PIECE SAME COLOR AS THE ONE IN MY HAND ?
+                if( ((Piece) board.getAllSquares()[ner][nec].getComponents()[1]).isWhite == this.selectedPiece.isWhite() ){
+                    break;
+                } else {
+                    //i just encountered an enemy
+                    northEastPossibilities.add(new Position(ner, nec));
+                    break;
+                }
+            } else {
+                //there is no piece, then
+                northEastPossibilities.add(new Position(ner, nec));
+            }
+            ner--;
+            nec++;
+        }
+
+        //LOOK SOUTH EAST
+        int ser = currentRowPosition+1;
+        int sec = currentColumnPosition+1;
+        while( ser<=8 && sec <=8 ){
+            //IS THERE A PIECE?
+            if( board.getAllSquares()[ser][sec].getContainsPiece()==true ){
+                //IS THAT PIECE SAME COLOR AS THE ONE IN MY HAND ?
+                if( ((Piece) board.getAllSquares()[ser][sec].getComponents()[1]).isWhite == this.selectedPiece.isWhite() ){
+                    break;
+                } else {
+                    //i just encountered an enemy
+                    southEastPossibilities.add(new Position(ser,sec));
+                    break;
+                }
+            } else {
+                //there is no piece, then
+                southEastPossibilities.add(new Position(ser,sec));
+            }
+            ser++;
+            sec++;
+        }
+
+        //LOOK SOUTH WEST
+        int swr = currentRowPosition+1;
+        int swc = currentColumnPosition-1;
+        while( swr<=8 && swc >=1 ){
+            //IS THERE A PIECE?
+            if( board.getAllSquares()[swr][swc].getContainsPiece()==true ){
+                //IS THAT PIECE SAME COLOR AS THE ONE IN MY HAND ?
+                if( ((Piece) board.getAllSquares()[swr][swc].getComponents()[1]).isWhite == this.selectedPiece.isWhite() ){
+                    break;
+                } else {
+                    //i just encountered an enemy
+                    southWestPossibilities.add(new Position(swr,swc));
+                    break;
+                }
+            } else {
+                //there is no piece, then
+                southWestPossibilities.add(new Position(swr,swc));
+            }
+            swr++;
+            swc--;
+        }
+
+        //LOOK NORTH WEST
+        int nwr = currentRowPosition-1;
+        int nwc = currentColumnPosition-1;
+        while( nwr>=1 && nwc >=1 ){
+            //IS THERE A PIECE?
+            if( board.getAllSquares()[nwr][nwc].getContainsPiece()==true ){
+                //IS THAT PIECE SAME COLOR AS THE ONE IN MY HAND ?
+                if( ((Piece) board.getAllSquares()[nwr][nwc].getComponents()[1]).isWhite == this.selectedPiece.isWhite() ){
+                    break;
+                } else {
+                    //i just encountered an enemy
+                    northWestPossibilities.add(new Position(nwr,nwc));
+                    break;
+                }
+            } else {
+                //there is no piece, then
+                northWestPossibilities.add(new Position(nwr,nwc));
+            }
+            nwr--;
+            nwc--;
+        }
+
+        System.out.println("WHERE CAN I MOVE TO NORTH EAST: ");
+        System.out.println(northEastPossibilities);
+        System.out.println("WHERE CAN I MOVE TO SOUTH EAST: ");
+        System.out.println(southEastPossibilities);
+        System.out.println("WHERE CAN I MOVE TO SOUTH WEST: ");
+        System.out.println(southWestPossibilities);
+        System.out.println("WHERE CAN I MOVE TO NORTH WEST: ");
+        System.out.println(northWestPossibilities);
+
+
+        Position targetPosition = new Position(targetRowPosition, targetColumnPosition);
+
+        int validate = 0;
+
+        for (int index =0; index < northEastPossibilities.size(); index++){
+            if ( northEastPossibilities.get(index).getRowPosition() == targetRowPosition && northEastPossibilities.get(index).getColPosition() == targetColumnPosition){
+                validate++;
+            }
+        }
+        for (int index =0; index < southEastPossibilities.size(); index++){
+            if ( southEastPossibilities.get(index).getRowPosition() == targetRowPosition && southEastPossibilities.get(index).getColPosition() == targetColumnPosition){
+                validate++;
+            }
+        }
+        for (int index =0; index < southWestPossibilities.size(); index++){
+            if ( southWestPossibilities.get(index).getRowPosition() == targetRowPosition && southWestPossibilities.get(index).getColPosition() == targetColumnPosition){
+                validate++;
+            }
+        }
+        for (int index =0; index < northWestPossibilities.size(); index++){
+            if ( northWestPossibilities.get(index).getRowPosition() == targetRowPosition && northWestPossibilities.get(index).getColPosition() == targetColumnPosition){
+                validate++;
+            }
+        }
+
+        if( validate==0){
+            return false;
+        } else {
+            return true;
+        }
+    };
+
+    public boolean validateQueenMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
+
+        boolean asRook = validateRookMove(currentRowPosition, currentColumnPosition, targetRowPosition, targetColumnPosition);
+        boolean asBishop = validateBishopMove(currentRowPosition, currentColumnPosition, targetRowPosition, targetColumnPosition);
+
+        if( asRook == true || asBishop == true){
+            return true;
+        } else {
+            return false;
+        }
+
+    };
+
+
+
 
 
     //below is the class' brackets

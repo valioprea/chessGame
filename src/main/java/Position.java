@@ -22,4 +22,12 @@ public class Position {
     public void setColPosition(int colPosition) {
         this.colPosition = colPosition;
     }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "rowPosition=" + rowPosition +
+                ", colPosition=" + colPosition +
+                '}';
+    }
 }
