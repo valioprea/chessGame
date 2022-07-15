@@ -2,6 +2,7 @@ import javax.swing.*;
 
 public class Piece extends JLabel {
 
+    public boolean canBeMoved;
     public Square[][] allSquares;
     private String name;
     public GameLogic gameLogic;
@@ -10,7 +11,7 @@ public class Piece extends JLabel {
     public int rowPosition;
     public int columnPosition;
 
-    public Piece(String name, Icon icon, GameLogic gameLogic, boolean isWhite, Square[][] allSquares, int rowPosition, int columnPosition) {
+    public Piece(String name, Icon icon, GameLogic gameLogic, boolean isWhite, Square[][] allSquares, int rowPosition, int columnPosition, boolean firstMove) {
         super(icon);
         this.name = name;
         this.gameLogic = gameLogic;
@@ -18,6 +19,7 @@ public class Piece extends JLabel {
         this.allSquares = allSquares;
         this.rowPosition = rowPosition;
         this.columnPosition = columnPosition;
+        this.canBeMoved = firstMove;
     }
 
     public boolean isWhite() {
@@ -40,9 +42,25 @@ public class Piece extends JLabel {
         this.columnPosition = columnPosition;
     }
 
+    public boolean isCanBeMoved() {
+        return canBeMoved;
+    }
+
+    public void setCanBeMoved(boolean canBeMoved) {
+        this.canBeMoved = canBeMoved;
+    }
+
     @Override
     public String getName() {
         return this.name;
     }
 
+    @Override
+    public String toString() {
+        return "Piece{" +
+                "name='" + name + '\'' +
+                ", rowPosition=" + rowPosition +
+                ", columnPosition=" + columnPosition +
+                '}';
+    }
 }

@@ -1,3 +1,4 @@
+import javax.security.auth.callback.Callback;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -6,6 +7,8 @@ import java.util.ArrayList;
 
 
 public class GameLogic {
+
+    private String GAMETURN = "white";
     public JFrame frame;
     public Board board;
     public Piece selectedPiece;
@@ -23,11 +26,19 @@ public class GameLogic {
         this.board = board;
     }
 
+    public String getGAMETURN() {
+        return GAMETURN;
+    }
+
+    public void setGAMETURN(String GAMETURN) {
+        this.GAMETURN = GAMETURN;
+    }
+
     public Piece getPiece() {
         return selectedPiece;
     }
 
-    public void grabPiece(Piece selectedPiece) { //TODO: this needs rethinking -> only in sequence 1 I can grab the piece, I got lost in the code trying to find out when do I get the targetSquarePositions
+    public void grabPiece(Piece selectedPiece) {
         this.selectedPiece = selectedPiece;
         this.setSequence(2);
         System.out.println("...and my piece is "+this.selectedPiece.getName());
@@ -46,9 +57,9 @@ public class GameLogic {
     public void placePiece(int rowPosition, int columnPosition) {
 
         //TODO: I will need to think about how to properly do this below:
-        if(this.selectedPiece.getName() == "rook"){
-            ((Rook)this.selectedPiece).setRookHasMovedBeforeCastling(true);
-        }
+//        if(this.selectedPiece.getName() == "rook"){
+//            ((Rook)this.selectedPiece).setRookHasMovedBeforeCastling(true);
+//        }
 
         //Set false to contains piece for previous square
         this.board.getAllSquares()[this.selectedPiece.getRowPosition()][this.selectedPiece.getColumnPosition()].setContainsPiece(false);
@@ -64,7 +75,7 @@ public class GameLogic {
         this.board.getAllSquares()[rowPosition][columnPosition].setContainsPiece(true);
 
         this.frame.repaint();
-
+        finishTurn(); //TODO: maybe here ? -> enable/disable white/black pieces
         ungrabPiece();
     }
 
@@ -74,10 +85,9 @@ public class GameLogic {
 
     public void whyAmIPressing(int targetRowPosition, int targetColumnPosition) {
         //I got a piece in hand, just pressed a square, I want to move my piece there.
+
         //What kind of piece do I have in my hand ?
-
         String pieceType = selectedPiece.getName();
-
         boolean isValid = false;
         if(pieceType == "pawn"){
             System.out.println("I should implement logic for pawn move validation");
@@ -99,7 +109,6 @@ public class GameLogic {
         if(isValid == false){
             ungrabPiece();
         } else {
-
             //Is the target square empty?
             if (board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == false){
                 placePiece(targetRowPosition, targetColumnPosition); //if empty, I will place my piece here
@@ -130,6 +139,61 @@ public class GameLogic {
     }
 
 
+    //TODO: check these two functions below
+    //UTILITY - get all pieces of the same color
+    public ArrayList<Piece> getAllPiecesOfThisColor(boolean isWhite){
+
+        if(isWhite == true){
+            ArrayList<Piece> allWhitePieces = new ArrayList<>();
+            for(int i=1; i<=8;i++){
+                for(int j=1;j<=8;j++){
+                    if( board.getAllSquares()[i][j].getContainsPiece() ==true && ((Piece) board.getAllSquares()[i][j].getComponents()[1]).isWhite() == isWhite ){
+                        allWhitePieces.add(  ((Piece) board.getAllSquares()[i][j].getComponents()[1]) );
+                    }
+                }
+            }
+            System.out.println(allWhitePieces);
+            return allWhitePieces;
+        } else {
+            ArrayList<Piece> allBlackPieces = new ArrayList<>();
+            for(int i=1; i<=8;i++){
+                for(int j=1;j<=8;j++){
+                    if( board.getAllSquares()[i][j].getContainsPiece() ==true && ((Piece) board.getAllSquares()[i][j].getComponents()[1]).isWhite() == isWhite ){
+                        allBlackPieces.add(  ((Piece) board.getAllSquares()[i][j].getComponents()[1]) );
+                    }
+                }
+            }
+            System.out.println(allBlackPieces);
+            return allBlackPieces;
+        }
+
+    };
+
+    public void finishTurn(){
+    //Who did finish the turn ?
+        if( this.selectedPiece.isWhite() == true ){
+            //white finished the turn
+            //deactivate white pieces + activate black pieces
+            getAllPiecesOfThisColor(true).forEach(piece -> {
+                piece.setCanBeMoved(false);
+            });
+            getAllPiecesOfThisColor(false).forEach(piece -> {
+                piece.setCanBeMoved(true);
+            });
+            this.setGAMETURN("black"); //-> black is next
+
+        } else {
+            //black finished the turn
+            //deactivate black pieces + activate white pieces
+            getAllPiecesOfThisColor(false).forEach(piece -> {
+                piece.setCanBeMoved(false);
+            });
+            getAllPiecesOfThisColor(true).forEach(piece -> {
+                piece.setCanBeMoved(true);
+            });
+            this.setGAMETURN("white"); //-> white is next
+        }
+    }
 
 
 
@@ -512,16 +576,13 @@ public class GameLogic {
     };
 
     public boolean validateQueenMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
-
         boolean asRook = validateRookMove(currentRowPosition, currentColumnPosition, targetRowPosition, targetColumnPosition);
         boolean asBishop = validateBishopMove(currentRowPosition, currentColumnPosition, targetRowPosition, targetColumnPosition);
-
         if( asRook == true || asBishop == true){
             return true;
         } else {
             return false;
         }
-
     };
 
 
