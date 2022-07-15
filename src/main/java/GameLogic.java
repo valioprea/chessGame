@@ -143,9 +143,22 @@ public class GameLogic {
                 }
             }
 
-
-
         } else if (pieceType == "bishop") {
+
+
+            //Do i have any computed positions for my bishop, relative to my current position ? ->I can get a list of all of them.
+            if( getBishopPositions(this.selectedPiece.getPiecePosition()).size() != 0) {
+                //Going through the list of positions
+                for (Position target : getBishopPositions(this.selectedPiece.getPiecePosition()) ){
+                    //Is my selected position found among the computed positions ?
+                    if (target.getRowPosition() == targetRowPosition && target.getColPosition() == targetColumnPosition) {
+                        isValid = true;                                                                 //TODO: HERE I NEED TO ASK MYSELF IF MY TARGET IS A KING !!!!
+                        break;
+                    }
+                }
+            }
+
+
 //            isValid = validateBishopMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition);
         } else if (pieceType == "queen") {
 //            isValid = validateQueenMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition);
@@ -347,12 +360,10 @@ public class GameLogic {
     };
 
     //Possible moves of bishop relative to current position
-    public boolean validateBishopMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
-
-        ArrayList<Position> northEastPossibilities = new ArrayList<>();
-        ArrayList<Position> southEastPossibilities = new ArrayList<>();
-        ArrayList<Position> southWestPossibilities = new ArrayList<>();
-        ArrayList<Position> northWestPossibilities = new ArrayList<>();
+    public ArrayList<Position> getBishopPositions(Position currentPosition){
+        ArrayList<Position> targets = new ArrayList<>();
+        int currentRowPosition = currentPosition.getRowPosition();
+        int currentColumnPosition = currentPosition.getColPosition();
 
         //LOOK NORTH EAST
         int ner = currentRowPosition-1; //ner= north-east row
@@ -365,12 +376,12 @@ public class GameLogic {
                     break;
                 } else {
                     //i just encountered an enemy
-                    northEastPossibilities.add(new Position(ner, nec));
+                    targets.add(new Position(ner, nec));
                     break;
                 }
             } else {
                 //there is no piece, then
-                northEastPossibilities.add(new Position(ner, nec));
+                targets.add(new Position(ner, nec));
             }
             ner--;
             nec++;
@@ -387,12 +398,12 @@ public class GameLogic {
                     break;
                 } else {
                     //i just encountered an enemy
-                    southEastPossibilities.add(new Position(ser,sec));
+                    targets.add(new Position(ser,sec));
                     break;
                 }
             } else {
                 //there is no piece, then
-                southEastPossibilities.add(new Position(ser,sec));
+                targets.add(new Position(ser,sec));
             }
             ser++;
             sec++;
@@ -409,12 +420,12 @@ public class GameLogic {
                     break;
                 } else {
                     //i just encountered an enemy
-                    southWestPossibilities.add(new Position(swr,swc));
+                    targets.add(new Position(swr,swc));
                     break;
                 }
             } else {
                 //there is no piece, then
-                southWestPossibilities.add(new Position(swr,swc));
+                targets.add(new Position(swr,swc));
             }
             swr++;
             swc--;
@@ -431,57 +442,17 @@ public class GameLogic {
                     break;
                 } else {
                     //i just encountered an enemy
-                    northWestPossibilities.add(new Position(nwr,nwc));
+                    targets.add(new Position(nwr,nwc));
                     break;
                 }
             } else {
                 //there is no piece, then
-                northWestPossibilities.add(new Position(nwr,nwc));
+                targets.add(new Position(nwr,nwc));
             }
             nwr--;
             nwc--;
         }
-
-        System.out.println("WHERE CAN I MOVE TO NORTH EAST: ");
-        System.out.println(northEastPossibilities);
-        System.out.println("WHERE CAN I MOVE TO SOUTH EAST: ");
-        System.out.println(southEastPossibilities);
-        System.out.println("WHERE CAN I MOVE TO SOUTH WEST: ");
-        System.out.println(southWestPossibilities);
-        System.out.println("WHERE CAN I MOVE TO NORTH WEST: ");
-        System.out.println(northWestPossibilities);
-
-
-        Position targetPosition = new Position(targetRowPosition, targetColumnPosition);
-
-        int validate = 0;
-
-        for (int index =0; index < northEastPossibilities.size(); index++){
-            if ( northEastPossibilities.get(index).getRowPosition() == targetRowPosition && northEastPossibilities.get(index).getColPosition() == targetColumnPosition){
-                validate++;
-            }
-        }
-        for (int index =0; index < southEastPossibilities.size(); index++){
-            if ( southEastPossibilities.get(index).getRowPosition() == targetRowPosition && southEastPossibilities.get(index).getColPosition() == targetColumnPosition){
-                validate++;
-            }
-        }
-        for (int index =0; index < southWestPossibilities.size(); index++){
-            if ( southWestPossibilities.get(index).getRowPosition() == targetRowPosition && southWestPossibilities.get(index).getColPosition() == targetColumnPosition){
-                validate++;
-            }
-        }
-        for (int index =0; index < northWestPossibilities.size(); index++){
-            if ( northWestPossibilities.get(index).getRowPosition() == targetRowPosition && northWestPossibilities.get(index).getColPosition() == targetColumnPosition){
-                validate++;
-            }
-        }
-
-        if( validate==0){
-            return false;
-        } else {
-            return true;
-        }
+        return targets;
     };
 
     //TODO: Queen
