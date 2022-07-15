@@ -115,8 +115,7 @@ public class GameLogic {
         if(pieceType == "pawn"){
             System.out.println("I should implement logic for pawn move validation");
             isValid = false;
-        } else if (pieceType == "rook") { //ROOK MOVE VALIDATION
-
+        } else if (pieceType == "rook") {
             //Do i have any computed positions for my rook, relative to my current position ? ->I can get a list of all of them.
             if( getRookPositions(this.selectedPiece.getPiecePosition()).size() != 0) {
                 //Going through the list of positions
@@ -128,9 +127,7 @@ public class GameLogic {
                     }
                 }
             }
-
         } else if (pieceType == "knight") {
-
             //Do i have any computed positions for my knight, relative to my current position ? ->I can get a list of all of them.
             if( getKnightPositions(this.selectedPiece.getPiecePosition()).size() != 0) {
                 //Going through the list of positions
@@ -142,10 +139,7 @@ public class GameLogic {
                     }
                 }
             }
-
         } else if (pieceType == "bishop") {
-
-
             //Do i have any computed positions for my bishop, relative to my current position ? ->I can get a list of all of them.
             if( getBishopPositions(this.selectedPiece.getPiecePosition()).size() != 0) {
                 //Going through the list of positions
@@ -157,11 +151,18 @@ public class GameLogic {
                     }
                 }
             }
-
-
-//            isValid = validateBishopMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition);
         } else if (pieceType == "queen") {
-//            isValid = validateQueenMove(this.selectedPiece.rowPosition, this.selectedPiece.columnPosition,targetRowPosition,targetColumnPosition);
+            //Do i have any computed positions for my queen, relative to my current position ? ->I can get a list of all of them.
+            if( getQueenPositions(this.selectedPiece.getPiecePosition()).size() != 0) {
+                //Going through the list of positions
+                for (Position target : getQueenPositions(this.selectedPiece.getPiecePosition()) ){
+                    //Is my selected position found among the computed positions ?
+                    if (target.getRowPosition() == targetRowPosition && target.getColPosition() == targetColumnPosition) {
+                        isValid = true;                                                                 //TODO: HERE I NEED TO ASK MYSELF IF MY TARGET IS A KING !!!!
+                        break;
+                    }
+                }
+            }
         } else if (pieceType == "king") {
             System.out.println("I should implement logic for king move validation");
             isValid = false;
@@ -455,19 +456,71 @@ public class GameLogic {
         return targets;
     };
 
-    //TODO: Queen
     //Possible moves of queen relative to current position
-//    public boolean validateQueenMove(int currentRowPosition, int currentColumnPosition, int targetRowPosition, int targetColumnPosition){
-//        boolean asRook = validateRookMove(currentRowPosition, currentColumnPosition, targetRowPosition, targetColumnPosition);
-//        boolean asBishop = validateBishopMove(currentRowPosition, currentColumnPosition, targetRowPosition, targetColumnPosition);
-//        if( asRook == true || asBishop == true){
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    };
+    public ArrayList<Position> getQueenPositions(Position currentPosition){
+        ArrayList<Position> targetsAsRook = getRookPositions(currentPosition);
+        ArrayList<Position> targetsAsBishop = getBishopPositions(currentPosition);
+        ArrayList<Position> queenTargets = new ArrayList<>();
+        //I just wat to have the targets in the same vector
+        for (Position target : targetsAsRook ){
+            queenTargets.add(target);
+        }
+        for (Position target : targetsAsBishop ){
+            queenTargets.add(target);
+        }
+        return queenTargets;
+    };
 
 
+    public ArrayList<Position> getAllAttackedSquaresByOpponent(){
+        //Aux transformation -> from string to boolean LMAO
+        boolean color;
+        if( getGAMETURN() == "white"){
+            color = true;
+        } else {
+            color = false;
+        }
+        ArrayList<Piece> allOpponentPieces = getAllPiecesOfThisColor(color);
+        ArrayList<Position> allOpponentPossibleAttacks = new ArrayList<>();
+
+        for (Piece piece : allOpponentPieces){
+
+            if( piece.getName() == "rook" ){
+
+                //I am grabbing the attacked positions of this piece, at its own position!
+                for(Position position : getRookPositions(piece.getPiecePosition())){
+                    allOpponentPossibleAttacks.add(position);
+                }
+
+            } else if (piece.getName() == "knight") {
+
+                //I am grabbing the attacked positions of this piece, at its own position!
+                for(Position position : getKnightPositions(piece.getPiecePosition())){
+                    allOpponentPossibleAttacks.add(position);
+                }
+
+            } else if (piece.getName() == "bishop") {
+
+                //I am grabbing the attacked positions of this piece, at its own position!
+                for(Position position : getBishopPositions(piece.getPiecePosition())){
+                    allOpponentPossibleAttacks.add(position);
+                }
+
+            } else if (piece.getName() == "queen") {
+
+                //I am grabbing the attacked positions of this piece, at its own position!
+                for(Position position : getQueenPositions(piece.getPiecePosition())){
+                    allOpponentPossibleAttacks.add(position);
+                }
+
+            }
+
+        }
+
+        //TODO: this whole array of possitions may contain duplicates
+        return allOpponentPossibleAttacks;
+
+    }
 
 
 
