@@ -3,7 +3,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         System.out.println("Welcome to my chess game");
-
+        System.out.println("White moves first");
         Board board = new Board();
 
         GameLogic gameLogic = new GameLogic(board);

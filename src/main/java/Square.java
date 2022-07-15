@@ -61,23 +61,20 @@ public class Square extends JPanel {
                 if(gameLogic.getSequence() == 1) {
 
                     if(getContainsPiece() == true) {
-                        System.out.println("i have a piece");
-
                         if( ((Piece)((Square)e.getComponent()).getComponents()[1]).isCanBeMoved()==true ){
                             gameLogic.grabPiece( ((Piece)((Square)e.getComponent()).getComponents()[1]) );
-                            System.out.println("Sequence will be: "+gameLogic.getSequence());
+
                         } else {
                             System.out.println("Wait for your turn please");
                         }
                     } else {
                         System.out.println("I was just pressing on the board (from piece)");
-//                        gameLogic.getAllPiecesOfThisColor(false);
-                        System.out.println("Sequence will be: "+gameLogic.getSequence());
+                        System.out.println("Sequence will be "+gameLogic.getSequence()+": you need to grab a piece");
                     }
 
                 } else {
                     gameLogic.whyAmIPressing(getRowPosition(), getColumnPosition());
-                    System.out.println("Sequence will be: "+gameLogic.getSequence());
+//                    System.out.println("Sequence will be: "+gameLogic.getSequence());
                 }
 
 
