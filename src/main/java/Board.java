@@ -15,7 +15,6 @@ public class Board {
     public void initializeSquares(GameLogic gameLogic) throws IOException {
 
         int generatedSquare = 1; //will be a number from 1 to 64
-        int k = 7;
         for( int i=1; i<=8; i++){
             alternativeColor = !alternativeColor;
             for ( int j=1; j<=8; j++) {
@@ -31,8 +30,6 @@ public class Board {
                 this.allSquares[i][j].setBounds(j*60,i*60,squareDimension,squareDimension); //set dims and position for each square
                 this.allSquares[i][j].setRowPosition(i);
                 this.allSquares[i][j].setColumnPosition(j);
-
-//                this.printedPosition = Positions.COLUMNS[i]+""+Positions.ROWS[k]; //transforms to string to write on board. JUST VISUAL
                 this.printedPosition = i+""+j;
 
                 String generatedSquareString = String.valueOf(generatedSquare);
@@ -41,7 +38,6 @@ public class Board {
                 this.allSquares[i][j].add(positionLabel, BorderLayout.SOUTH); //Finalization of generation of squares. Square[][] allSquares;
                 generatedSquare++;
             }
-            k--;
         };
         for( int i=1; i<=8; i++){
             for ( int j=1; j<=8; j++) {
@@ -56,41 +52,52 @@ public class Board {
         gameFrame.setVisible(true);
     }
 
+    public Square[][] generateImaginarySquares(GameLogic gameLogic){
+        Square[][] allImaginarySquares = new Square[9][9];
+        for( int i=1; i<=8; i++){
+            for ( int j=1; j<=8; j++) {
+                allImaginarySquares[i][j] = new Square(gameLogic);
+                allImaginarySquares[i][j].setRowPosition(i);
+                allImaginarySquares[i][j].setColumnPosition(j);
+            }
+        };
+        return allImaginarySquares;
+    }
 
     public void initializePieces(GameLogic gameLogic, Square[][] allSquares) throws IOException {
 
 
         //WHITE PIECES
         this.allSquares[8][1].setContainsPiece(true);
-        this.allSquares[8][1].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, allSquares,8,1, true));
+        this.allSquares[8][1].add(new Rook("rook", new Position(8,1), new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, true));
         this.allSquares[8][8].setContainsPiece(true);
-        this.allSquares[8][8].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, allSquares,8,8, true));
+        this.allSquares[8][8].add(new Rook("rook", new Position(8,8), new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, true));
         this.allSquares[8][2].setContainsPiece(true);
-        this.allSquares[8][2].add(new Knight("knight", new ImageIcon(this.pieceImageList.getListOfPieceImages()[3]), gameLogic, true, allSquares,8,2, true));
+        this.allSquares[8][2].add(new Knight("knight", new Position(8,2), new ImageIcon(this.pieceImageList.getListOfPieceImages()[3]), gameLogic, true,true));
         this.allSquares[8][7].setContainsPiece(true);
-        this.allSquares[8][7].add(new Knight("knight", new ImageIcon(this.pieceImageList.getListOfPieceImages()[3]), gameLogic, true, allSquares,8,7, true));
+        this.allSquares[8][7].add(new Knight("knight", new Position(8,7), new ImageIcon(this.pieceImageList.getListOfPieceImages()[3]), gameLogic, true,true));
         this.allSquares[8][3].setContainsPiece(true);
-        this.allSquares[8][3].add(new Bishop("bishop", new ImageIcon(this.pieceImageList.getListOfPieceImages()[2]), gameLogic, true, allSquares,8,3, true));
+        this.allSquares[8][3].add(new Bishop("bishop", new Position(8,3), new ImageIcon(this.pieceImageList.getListOfPieceImages()[2]), gameLogic, true,true));
         this.allSquares[8][6].setContainsPiece(true);
-        this.allSquares[8][6].add(new Bishop("bishop", new ImageIcon(this.pieceImageList.getListOfPieceImages()[2]), gameLogic, true, allSquares,8,6, true));
+        this.allSquares[8][6].add(new Bishop("bishop", new Position(8,6), new ImageIcon(this.pieceImageList.getListOfPieceImages()[2]), gameLogic, true,true));
         this.allSquares[8][4].setContainsPiece(true);
-        this.allSquares[8][4].add(new Queen("queen", new ImageIcon(this.pieceImageList.getListOfPieceImages()[1]), gameLogic, true, allSquares,8,4, true));
+        this.allSquares[8][4].add(new Queen("queen", new Position(8,4), new ImageIcon(this.pieceImageList.getListOfPieceImages()[1]), gameLogic, true, true));
 
         //BLACK PIECES
         this.allSquares[1][8].setContainsPiece(true);
-        this.allSquares[1][8].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[10]), gameLogic, false, allSquares,1,8, false));
+        this.allSquares[1][8].add(new Rook("rook", new Position(1,8), new ImageIcon(this.pieceImageList.getListOfPieceImages()[10]), gameLogic, false, false));
         this.allSquares[1][1].setContainsPiece(true);
-        this.allSquares[1][1].add(new Rook("rook", new ImageIcon(this.pieceImageList.getListOfPieceImages()[10]), gameLogic, false, allSquares,1,1, false));
+        this.allSquares[1][1].add(new Rook("rook", new Position(1,1), new ImageIcon(this.pieceImageList.getListOfPieceImages()[10]), gameLogic, false, false));
         this.allSquares[1][2].setContainsPiece(true);
-        this.allSquares[1][2].add(new Knight("knight", new ImageIcon(this.pieceImageList.getListOfPieceImages()[9]), gameLogic, false, allSquares,1,2, false));
+        this.allSquares[1][2].add(new Knight("knight", new Position(1,2), new ImageIcon(this.pieceImageList.getListOfPieceImages()[9]), gameLogic, false, false));
         this.allSquares[1][7].setContainsPiece(true);
-        this.allSquares[1][7].add(new Knight("knight", new ImageIcon(this.pieceImageList.getListOfPieceImages()[9]), gameLogic, false, allSquares,1,7, false));
+        this.allSquares[1][7].add(new Knight("knight", new Position(1,7), new ImageIcon(this.pieceImageList.getListOfPieceImages()[9]), gameLogic, false, false));
         this.allSquares[1][3].setContainsPiece(true);
-        this.allSquares[1][3].add(new Bishop("bishop", new ImageIcon(this.pieceImageList.getListOfPieceImages()[8]), gameLogic, false, allSquares,1,3, false));
+        this.allSquares[1][3].add(new Bishop("bishop", new Position(1,3), new ImageIcon(this.pieceImageList.getListOfPieceImages()[8]), gameLogic, false, false));
         this.allSquares[1][6].setContainsPiece(true);
-        this.allSquares[1][6].add(new Bishop("bishop", new ImageIcon(this.pieceImageList.getListOfPieceImages()[8]), gameLogic, false, allSquares,1,6, false));
+        this.allSquares[1][6].add(new Bishop("bishop", new Position(1,6), new ImageIcon(this.pieceImageList.getListOfPieceImages()[8]), gameLogic, false, false));
         this.allSquares[1][4].setContainsPiece(true);
-        this.allSquares[1][4].add(new Queen("queen", new ImageIcon(this.pieceImageList.getListOfPieceImages()[7]), gameLogic, false, allSquares,1,4, false));
+        this.allSquares[1][4].add(new Queen("queen", new Position(1,4), new ImageIcon(this.pieceImageList.getListOfPieceImages()[7]), gameLogic, false,false));
 
         gameFrame.setVisible(true);
     }
