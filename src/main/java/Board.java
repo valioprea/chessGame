@@ -15,7 +15,6 @@ public class Board {
     public void initializeSquares(GameLogic gameLogic) throws IOException {
 
         int generatedSquare = 1; //will be a number from 1 to 64
-        int k = 7;
         for( int i=1; i<=8; i++){
             alternativeColor = !alternativeColor;
             for ( int j=1; j<=8; j++) {
@@ -39,7 +38,6 @@ public class Board {
                 this.allSquares[i][j].add(positionLabel, BorderLayout.SOUTH); //Finalization of generation of squares. Square[][] allSquares;
                 generatedSquare++;
             }
-            k--;
         };
         for( int i=1; i<=8; i++){
             for ( int j=1; j<=8; j++) {
@@ -54,6 +52,17 @@ public class Board {
         gameFrame.setVisible(true);
     }
 
+    public Square[][] generateImaginarySquares(GameLogic gameLogic){
+        Square[][] allImaginarySquares = new Square[9][9];
+        for( int i=1; i<=8; i++){
+            for ( int j=1; j<=8; j++) {
+                allImaginarySquares[i][j] = new Square(gameLogic);
+                allImaginarySquares[i][j].setRowPosition(i);
+                allImaginarySquares[i][j].setColumnPosition(j);
+            }
+        };
+        return allImaginarySquares;
+    }
 
     public void initializePieces(GameLogic gameLogic, Square[][] allSquares) throws IOException {
 

@@ -70,6 +70,12 @@ public class Square extends JPanel {
                     } else {
                         System.out.println("I was just pressing on the board (from piece)");
                         System.out.println("Sequence will be "+gameLogic.getSequence()+": you need to grab a piece");
+                        System.out.println(gameLogic.getGAMETURN());
+                        gameLogic.getAllAttackedSquaresByOpponent().stream().forEach(position -> {
+                            if (position.equals(new Position(1,1))){
+                                System.out.println("DA e ok");
+                            }
+                        });
                     }
 
                 } else {
