@@ -237,7 +237,7 @@ public class GameLogic {
 
         //TODO: COMPUTATIONS #######################################################################################################################################################
 
-
+    //How do all squares from the imaginary board look like -> imaginaryBoard.getAllSquares()[rowPosition][columnPosition]
     //How does a square look like: -> board.getAllSquares()[rowPosition][columnPosition]
     //How does a piece look like: -> ((Piece) board.getAllSquares()[i][j].getComponents()[1])
 
@@ -600,51 +600,92 @@ public class GameLogic {
     }
 
     public ArrayList<Position> evaluatePossibleMoves(){
-
-
-
-
         //Aux transformation -> from string to boolean LMAO
-//        boolean color;
-//        if( getGAMETURN() == "white"){
-//            color = true;
-//        } else {
-//            color = false;
-//        }
+        boolean color;
+        boolean oppositeColor;
+        if( getGAMETURN() == "white"){
+                color = true;
+                oppositeColor = false;
+            } else {
+                color = false;
+                oppositeColor = true;
+            }
+        ArrayList<Piece> allMyPieces = getAllPiecesOfThisColor(color);
+        ArrayList<Piece> allOpponentPieces = getAllPiecesOfThisColor(oppositeColor);
+        //I have all my pieces. I want each position of each piece to compute.
+        //For each piece...
+        for (Piece piece : allMyPieces){ //GET PIECE i
+
+            //What piece type do I have?
+            if( piece.getName() == "rook" ){
+
+                //Get all positions for the rook
+                ArrayList<Position> rookPositions = getRookPositions(piece);
+                //For each position...
+                for( Position position : rookPositions ){ //GET POSITION j
+
+                    //Create imaginary board - refresh - clean
+                    assignImaginaryBoardCurrentPieces(allMyPieces,allOpponentPieces); //TODO: THIS HAPPENS FOR EACH POSITION !
+
+                    //Place piece i on position j on the imaginary board
+                    placePieceIonPositionJonImaginaryBoard(piece,position);
+
+                    //GET all attacked squares by the opponent -> in the context of the imaginary move
+
+                }
+            }
+
+        }
+
+
+
+
         ArrayList<Position> validMoves = new ArrayList<>();
-//        ArrayList<Piece> allMyPieces = getAllPiecesOfThisColor(color);
-
-        //I will look through all my pieces.
-//        for (Piece piece : allMyPieces){
-//
-//            //Is my piece a rook ?
-//            if( piece.getName() == "rook" ){
-//
-//                //I am grabbing my rook. These are all placement-wise correct except they can capture the king now.
-//
-//
-//            } else if (piece.getName() == "knight") {
-//
-////cand pun o piesa, reevaluez daca e regele meu in sah adica get attacked squares. daca nu mai e inseamna ca mutarea e valida, daca mai e, mutarea nu e valida
-//
-//            } else if (piece.getName() == "bishop") {
-//
-//
-//
-//            } else if (piece.getName() == "queen") {
-//
-//            }
-//        }
-
         return validMoves;
     };
 
 
+
+    //How do all squares from the imaginary board look like -> imaginaryBoard.getAllSquares()[rowPosition][columnPosition]
+    //How does a square look like: -> imaginaryBoard.getAllSquares()[rowPosition][columnPosition]
+    //How does a piece look like: -> ((Piece) imaginaryBoard.getAllSquares()[i][j].getComponents()[1])
+
     public void assignImaginaryBoardCurrentPieces(ArrayList<Piece> myPieces, ArrayList<Piece> opponentPieces){
-
-
-
+        //first I need to clean the board
+        for( int i=1; i<=8; i++){
+            for ( int j=1; j<=8; j++) {
+                //if the imaginary square contains a piece, remove it
+                if(((Square)imaginaryBoard.getAllSquares()[i][j]).getContainsPiece()){
+                    imaginaryBoard.getAllSquares()[i][j].remove(1);
+                    imaginaryBoard.getAllSquares()[i][j].setContainsPiece(false);
+                }
+            }
+        };
+        //assigning myPieces and opponentPieces
+        myPieces.forEach(piece -> {
+            this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].add(piece);
+            this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].setContainsPiece(true);
+        });
+        opponentPieces.forEach(piece -> {
+            this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].add(piece);
+            this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].setContainsPiece(true);
+        });
     }
+    public void placePieceIonPositionJonImaginaryBoard(Piece currentPiece, Position currentTargetPosition){
+        //I need to ask myself if a piece was on that imaginary square -> it needs to be slain
+        if(((Square) imaginaryBoard.getAllSquares()[currentTargetPosition.getRowPosition()][currentTargetPosition.getColPosition()]).getContainsPiece()){
+            //TODO: IMPORTANT! -> the index is zero because in imaginary squares you only contain pieces. You don't have labels anymore
+            imaginaryBoard.getAllSquares()[currentTargetPosition.getRowPosition()][currentTargetPosition.getColPosition()].remove(0);
+        }
+        //Set false to contains piece for previous square of current piece
+        this.imaginaryBoard.getAllSquares()[currentPiece.getPiecePosition().getRowPosition()][currentPiece.getPiecePosition().getColPosition()].setContainsPiece(false);
+        //Assign currentPiece to new square
+        this.imaginaryBoard.getAllSquares()[currentTargetPosition.getRowPosition()][currentTargetPosition.getColPosition()].add(currentPiece);
+        //Assign new coordinates for the recently placed currentPiece
+        currentPiece.setPiecePosition(new Position(currentTargetPosition.getRowPosition(), currentTargetPosition.getColPosition()));
+        //Set true to contains piece for new square
+        this.imaginaryBoard.getAllSquares()[currentTargetPosition.getRowPosition()][currentTargetPosition.getColPosition()].setContainsPiece(true);
+    };
 
     public int isMyKingInCheck(Piece currentKing){
         //As long as my king's position is within the attacked squares, I am in check
