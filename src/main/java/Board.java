@@ -52,7 +52,7 @@ public class Board {
         gameFrame.setVisible(true);
     }
 
-    public Square[][] generateImaginarySquares(GameLogic gameLogic){
+    public void generateImaginarySquares(GameLogic gameLogic){
         Square[][] allImaginarySquares = new Square[9][9];
         for( int i=1; i<=8; i++){
             for ( int j=1; j<=8; j++) {
@@ -61,7 +61,6 @@ public class Board {
                 allImaginarySquares[i][j].setColumnPosition(j);
             }
         };
-        return allImaginarySquares;
     }
 
     public void initializePieces(GameLogic gameLogic, Square[][] allSquares) throws IOException {
