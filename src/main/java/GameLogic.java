@@ -1,3 +1,4 @@
+import javax.sound.midi.Soundbank;
 import javax.swing.*;
 import java.util.ArrayList;
 
@@ -97,95 +98,151 @@ public class GameLogic {
         ungrabPiece();
     }
 
-
+    public void endGame(){
+        ungrabPiece();
+        getAllPiecesOfThisColor(true, this.board).forEach(piece -> {
+            piece.setCanBeMoved(false);
+        });
+        getAllPiecesOfThisColor(false, this.board).forEach(piece -> {
+            piece.setCanBeMoved(false);
+        });
+        System.out.println(" --- CHECKMATE --- ");
+    }
 
 
 
     //TODO: this function is a mess
     public void whyAmIPressing(int targetRowPosition, int targetColumnPosition) {
-
         //I got a piece in hand, just pressed a square, I want to move my piece there.
-        //What kind of piece do I have in my hand ?
-        String pieceType = selectedPiece.getName();
-        boolean isValid = false;
-        if(pieceType == "pawn"){
-            System.out.println("I should implement logic for pawn move validation");
-            isValid = false;
-        } else if (pieceType == "rook") {
-            //Do i have any computed positions for my rook, relative to my current position ? ->I can get a list of all of them.
-            if( getRookPositions(this.selectedPiece, this.board).size() != 0) {
-                //Going through the list of positions
-                for (Position target : getRookPositions(this.selectedPiece, this.board) ){
-                    //Is my selected position found among the computed positions ?
-                    if (target.getRowPosition() == targetRowPosition && target.getColPosition() == targetColumnPosition) {
-                        isValid = true;                                                                 //TODO: HERE I NEED TO ASK MYSELF IF MY TARGET IS A KING !!!!
-                        break;
-                    }
-                }
-            }
-        } else if (pieceType == "knight") {
-            //Do i have any computed positions for my knight, relative to my current position ? ->I can get a list of all of them.
-            if( getKnightPositions(this.selectedPiece, this.board).size() != 0) {
-                //Going through the list of positions
-                for (Position target : getKnightPositions(this.selectedPiece, this.board) ){
-                    //Is my selected position found among the computed positions ?
-                    if (target.getRowPosition() == targetRowPosition && target.getColPosition() == targetColumnPosition) {
-                        isValid = true;                                                                 //TODO: HERE I NEED TO ASK MYSELF IF MY TARGET IS A KING !!!!
-                        break;
-                    }
-                }
-            }
-        } else if (pieceType == "bishop") {
-            //Do i have any computed positions for my bishop, relative to my current position ? ->I can get a list of all of them.
-            if( getBishopPositions(this.selectedPiece, this.board).size() != 0) {
-                //Going through the list of positions
-                for (Position target : getBishopPositions(this.selectedPiece, this.board) ){
-                    //Is my selected position found among the computed positions ?
-                    if (target.getRowPosition() == targetRowPosition && target.getColPosition() == targetColumnPosition) {
-                        isValid = true;                                                                 //TODO: HERE I NEED TO ASK MYSELF IF MY TARGET IS A KING !!!!
-                        break;
-                    }
-                }
-            }
-        } else if (pieceType == "queen") {
-            //Do i have any computed positions for my queen, relative to my current position ? ->I can get a list of all of them.
-            if( getQueenPositions(this.selectedPiece, this.board).size() != 0) {
-                //Going through the list of positions
-                for (Position target : getQueenPositions(this.selectedPiece, this.board) ){
-                    //Is my selected position found among the computed positions ?
-                    if (target.getRowPosition() == targetRowPosition && target.getColPosition() == targetColumnPosition) {
-                        isValid = true;                                                                 //TODO: HERE I NEED TO ASK MYSELF IF MY TARGET IS A KING !!!!
-                        break;
-                    }
-                }
-            }
-        } else if (pieceType == "king") {
-            System.out.println("I should implement logic for king move validation");
-            isValid = false;
+        //I have a validator, how happy I am
+        System.out.println("#FIRST PRINT imaginary board is: "+this.imaginaryBoard);
+        System.out.println("#SECOND PRINT real board is: "+this.board);
+        Position myTargetPosition = new Position(targetRowPosition, targetColumnPosition);
+        ArrayList<Position> validPositions = evaluatePossibleMoves();
+
+        //Am I checkmated?
+        if(validPositions.size() == 0){
+            endGame();
         }
 
         //Is the move valid ?
-        if(isValid == false){
-            ungrabPiece();
-            System.out.println("That move is illegal. Please reselect a piece");
-        } else {
-            //Is the target square empty?
-            if (board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == false){
-                placePiece(targetRowPosition, targetColumnPosition); //if empty, I will place my piece here
-                System.out.println("Sequence will be " + sequence+": you need to grab a piece"); //should be 1 now
-            } else {
-                //Is that an enemy I am targeting or friendly piece ?
-                if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() == this.selectedPiece.isWhite() ){
-                    System.out.println("I can't place a piece of my own over another piece of my own. I need to reselect my piece");
-                    ungrabPiece();
-                    System.out.println("Sequence will be " + sequence+": you need to grab a piece");
+        for (Position validPosition : validPositions){
+
+            if(myTargetPosition.equals(validPosition)){
+                //Yes, the move is valid, I can find it here in all the valid positions.
+
+                //Is the target square empty?
+                if(!this.board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece()){
+                    //Yes, it is empty
+                    placePiece(targetRowPosition,targetColumnPosition);
+                    System.out.println("Sequence will be " + sequence+": you need to grab a piece"); //should be 1 now
                 } else {
-                    System.out.println("Not so sure about capturing logic but here we go ...");
-                    slay(targetRowPosition, targetColumnPosition);
-                    System.out.println("Sequence will be " + sequence+": you need to grab a piece");
+                    //So the square is not empty
+                    //Do I want to slay a king ? - this will not be allowed. No kingSlayers around here
+                    if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).getName() == "king" ){
+                        ungrabPiece();
+                        System.out.println("You tried to kill a king. Your punishment is guillotine");
+                    } else {
+                        //So the square is still not empty & the targeted piece is not a king
+                        //Is the piece in my hand same color as the one on the target square ?
+                        if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() == this.selectedPiece.isWhite() ){
+                            System.out.println("I can't place a piece of my own over another piece of my own. I need to reselect my piece. Computer punishes!");
+                            ungrabPiece();
+                            System.out.println("Sequence will be " + sequence+": you need to grab a piece");
+                        } else {
+                            System.out.println("Not so sure about capturing logic but here we go ...you murderer!");
+                            slay(targetRowPosition, targetColumnPosition);
+                            System.out.println("Sequence will be " + sequence+": you need to grab a piece");
+                        }
+                    }
                 }
             }
         }
+
+
+//        //What kind of piece do I have in my hand ?
+//        String pieceType = selectedPiece.getName();
+//        boolean isValid = false;
+//        if(pieceType == "pawn"){
+//            System.out.println("I should implement logic for pawn move validation");
+//            isValid = false;
+//        } else if (pieceType == "rook") {
+//            //Do i have any computed positions for my rook, relative to my current position ? ->I can get a list of all of them.
+//            if( getRookPositions(this.selectedPiece, this.board).size() != 0) {
+//                //Going through the list of positions
+//                for (Position target : getRookPositions(this.selectedPiece, this.board) ){
+//                    //Is my selected position found among the computed positions ?
+//                    if (target.getRowPosition() == targetRowPosition && target.getColPosition() == targetColumnPosition) {
+//                        isValid = true;                                                                 //TODO: HERE I NEED TO ASK MYSELF IF MY TARGET IS A KING !!!!
+//                        break;
+//                    }
+//                }
+//            }
+//        } else if (pieceType == "knight") {
+//            //Do i have any computed positions for my knight, relative to my current position ? ->I can get a list of all of them.
+//            if( getKnightPositions(this.selectedPiece, this.board).size() != 0) {
+//                //Going through the list of positions
+//                for (Position target : getKnightPositions(this.selectedPiece, this.board) ){
+//                    //Is my selected position found among the computed positions ?
+//                    if (target.getRowPosition() == targetRowPosition && target.getColPosition() == targetColumnPosition) {
+//                        isValid = true;                                                                 //TODO: HERE I NEED TO ASK MYSELF IF MY TARGET IS A KING !!!!
+//                        break;
+//                    }
+//                }
+//            }
+//        } else if (pieceType == "bishop") {
+//            //Do i have any computed positions for my bishop, relative to my current position ? ->I can get a list of all of them.
+//            if( getBishopPositions(this.selectedPiece, this.board).size() != 0) {
+//                //Going through the list of positions
+//                for (Position target : getBishopPositions(this.selectedPiece, this.board) ){
+//                    //Is my selected position found among the computed positions ?
+//                    if (target.getRowPosition() == targetRowPosition && target.getColPosition() == targetColumnPosition) {
+//                        isValid = true;                                                                 //TODO: HERE I NEED TO ASK MYSELF IF MY TARGET IS A KING !!!!
+//                        break;
+//                    }
+//                }
+//            }
+//        } else if (pieceType == "queen") {
+//            //Do i have any computed positions for my queen, relative to my current position ? ->I can get a list of all of them.
+//            if( getQueenPositions(this.selectedPiece, this.board).size() != 0) {
+//                //Going through the list of positions
+//                for (Position target : getQueenPositions(this.selectedPiece, this.board) ){
+//                    //Is my selected position found among the computed positions ?
+//                    if (target.getRowPosition() == targetRowPosition && target.getColPosition() == targetColumnPosition) {
+//                        isValid = true;                                                                 //TODO: HERE I NEED TO ASK MYSELF IF MY TARGET IS A KING !!!!
+//                        break;
+//                    }
+//                }
+//            }
+//        } else if (pieceType == "king") {
+//            System.out.println("I should implement logic for king move validation");
+//            isValid = false;
+//        }
+//
+//        //Is the move valid ?
+//        if(isValid == false){
+//            ungrabPiece();
+//            System.out.println("That move is illegal. Please reselect a piece");
+//        } else {
+//            //Is the target square empty?
+//            if (board.getAllSquares()[targetRowPosition][targetColumnPosition].getContainsPiece() == false){
+//                placePiece(targetRowPosition, targetColumnPosition); //if empty, I will place my piece here
+//                System.out.println("Sequence will be " + sequence+": you need to grab a piece"); //should be 1 now
+//            } else {
+//                //Is that an enemy I am targeting or friendly piece ?
+//                if( ((Piece) board.getAllSquares()[targetRowPosition][targetColumnPosition].getComponents()[1]).isWhite() == this.selectedPiece.isWhite() ){
+//                    System.out.println("I can't place a piece of my own over another piece of my own. I need to reselect my piece");
+//                    ungrabPiece();
+//                    System.out.println("Sequence will be " + sequence+": you need to grab a piece");
+//                } else {
+//                    System.out.println("Not so sure about capturing logic but here we go ...");
+//                    slay(targetRowPosition, targetColumnPosition);
+//                    System.out.println("Sequence will be " + sequence+": you need to grab a piece");
+//                }
+//            }
+//        }
+
+
     }
 
 
@@ -207,14 +264,17 @@ public class GameLogic {
 
 
     //TODO: COMPUTATIONS #######################################################################################################################################################
+
     //UTILITY - get all pieces of the same color true=WHITE & false=BLACK
     public ArrayList<Piece> getAllPiecesOfThisColor(boolean isWhite, Board currentBoard){
         if(isWhite){
             ArrayList<Piece> allWhitePieces = new ArrayList<>();
             for(int i=1; i<=8;i++){
                 for(int j=1;j<=8;j++){
-                    if( currentBoard.getAllSquares()[i][j].getContainsPiece() ==true && ((Piece) currentBoard.getAllSquares()[i][j].getComponents()[1]).isWhite() == isWhite ){
-                        allWhitePieces.add(  ((Piece) currentBoard.getAllSquares()[i][j].getComponents()[1]) );
+                    if(currentBoard.getAllSquares()[i][j].getContainsPiece()){
+                        if( ((Piece) currentBoard.getAllSquares()[i][j].getComponents()[1]).isWhite() == isWhite ) {
+                            allWhitePieces.add(  ((Piece) currentBoard.getAllSquares()[i][j].getComponents()[1]) );
+                        }
                     }
                 }
             }
@@ -223,24 +283,27 @@ public class GameLogic {
             ArrayList<Piece> allBlackPieces = new ArrayList<>();
             for(int i=1; i<=8;i++){
                 for(int j=1;j<=8;j++){
-                    if( currentBoard.getAllSquares()[i][j].getContainsPiece() ==true && ((Piece) currentBoard.getAllSquares()[i][j].getComponents()[1]).isWhite() == isWhite ){
-                        allBlackPieces.add(  ((Piece) currentBoard.getAllSquares()[i][j].getComponents()[1]) );
+                    if(currentBoard.getAllSquares()[i][j].getContainsPiece()) {
+                        if( ((Piece) currentBoard.getAllSquares()[i][j].getComponents()[1]).isWhite() == isWhite ) {
+                            allBlackPieces.add(  ((Piece) currentBoard.getAllSquares()[i][j].getComponents()[1]) );
+                        }
                     }
                 }
             }
             return allBlackPieces;
         }
-
-
     };
 
+    //TODO: IMPORTANT: de verificat getAllPiecesOfThisColor, ca nu cred ca primeste isWhite-ul bun - ma refer de verificat usageurile si ce fel de culori se trimit pe fiecare usage :)
     //How do all squares from the imaginary board look like -> imaginaryBoard.getAllSquares()[rowPosition][columnPosition]
     //How does a square look like:                          -> board.getAllSquares()[rowPosition][columnPosition]
     //How does a piece look like:                           -> ((Piece) board.getAllSquares()[i][j].getComponents()[1])
 
     //GET Possible moves of rook relative to current position
     //TODO: IMPORTANT!!! -> this method will also return an attacked position in which the opponent king is
+    public int utilizationOfthisfunction;
     public ArrayList<Position> getRookPositions(Piece currentRook, Board currentBoard){
+        utilizationOfthisfunction++;
         Position currentPosition = currentRook.getPiecePosition();
         //targets - an array of positions that are attacked by the rook
         ArrayList<Position> targets = new ArrayList<>();
@@ -250,6 +313,10 @@ public class GameLogic {
         while (horizontalNegative >= 1 ) {
             //IS THERE A PIECE?
             if(currentBoard.getAllSquares()[currentPosition.getRowPosition()][horizontalNegative].getContainsPiece()) {
+                System.out.println("IACA SUNTEM SI ACIA --->>>--->>> suntem la utilizarea "+utilizationOfthisfunction);
+                System.out.println("IACA SUNTEM SI ACIA --->>>--->>> "+ currentBoard.getAllSquares()[currentPosition.getRowPosition()][horizontalNegative].getContainsPiece());
+                System.out.println( ((Piece) currentBoard.getAllSquares()[currentPosition.getRowPosition()][horizontalNegative].getComponents()[1]).getPiecePosition() );
+                System.out.println(currentBoard.getAllSquares()[currentPosition.getRowPosition()][horizontalNegative].getComponents().length );
                 //IS THE EXISTING PIECE SAME COLOR AS MINE ?
                 if(((Piece) currentBoard.getAllSquares()[currentPosition.getRowPosition()][horizontalNegative].getComponents()[1]).isWhite() == currentRook.isWhite() ) {
                     break;
@@ -549,6 +616,7 @@ public class GameLogic {
 
 
     public ArrayList<Position> getAllAttackedSquaresByOpponent(Board currentBoard){
+
         //Aux transformation -> from string to boolean LMAO
         boolean color;
         if( getGAMETURN() == "white"){
@@ -556,7 +624,8 @@ public class GameLogic {
         } else {
             color = true;
         }
-        ArrayList<Piece> allOpponentPieces = getAllPiecesOfThisColor(color, this.board);
+
+        ArrayList<Piece> allOpponentPieces = getAllPiecesOfThisColor(color, currentBoard);
         ArrayList<Position> allOpponentPossibleAttacks = new ArrayList<>();
 
         for (Piece piece : allOpponentPieces){
@@ -608,8 +677,12 @@ public class GameLogic {
             color = false;
             oppositeColor = true;
         }
-        ArrayList<Piece> allMyPieces = getAllPiecesOfThisColor(color, this.board);
-        ArrayList<Piece> allOpponentPieces = getAllPiecesOfThisColor(oppositeColor, this.board);
+        System.out.println(this.board.getBoardName());
+        System.out.println(" LA  FIND 2");
+        ArrayList<Piece> allMyPieces = getAllPiecesOfThisColor(color, this.board); //PRIMUL APEL CRONOLOGIC AL FUNCTIEI
+        System.out.println(allMyPieces);
+        System.out.println(" LA  FIND 3");
+        ArrayList<Piece> allOpponentPieces = getAllPiecesOfThisColor(oppositeColor, this.board); //AL DOILEA APEL CRONOLOGIC AL FUNCTIEI
 
         //I have all my pieces. I want each position of each piece to compute.
         //For each piece...
@@ -624,6 +697,7 @@ public class GameLogic {
                 for( Position position : rookPositions ){ //GET POSITION j
 
                     //CREATE imaginary board - refresh - clean
+
                     assignImaginaryBoardCurrentPieces(allMyPieces,allOpponentPieces); //TODO: THIS HAPPENS FOR EACH POSITION !
 
                     //PLACE piece i on position j on the imaginary board
@@ -791,7 +865,7 @@ public class GameLogic {
 
 
 
-
+        //this position list is basically all the squares in which i can move the piece in my hand
         return validPositions;
     };
 
@@ -802,6 +876,7 @@ public class GameLogic {
     //How does a piece look like: -> ((Piece) imaginaryBoard.getAllSquares()[i][j].getComponents()[1])
 
     public void assignImaginaryBoardCurrentPieces(ArrayList<Piece> myPieces, ArrayList<Piece> opponentPieces){
+        //TODO: -> CRED CA AM GASIT BUG ? Mai trebuie studiat cum functioneaza lambda functions
         //first I need to clean the board
         for( int i=1; i<=8; i++){
             for ( int j=1; j<=8; j++) {
@@ -812,21 +887,43 @@ public class GameLogic {
                 }
             }
         };
-        //assigning myPieces and opponentPieces
-        myPieces.forEach(piece -> {
+
+        //assigning myPieces and opponentPieces //TODO: EXTREMELY BAD CHOICE TO USE LAMBDA PLEASE ASK OTHER COLLEAGUES WHY THIS DOES NOT WORK
+//        myPieces.forEach(piece -> {
+//            this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].add(piece);
+//            this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].setContainsPiece(true);
+//        });
+//        opponentPieces.forEach(piece -> {
+//            this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].add(piece);
+//            this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].setContainsPiece(true);
+//        });
+
+        for(Piece piece : myPieces) {
             this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].add(piece);
             this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].setContainsPiece(true);
-        });
-        opponentPieces.forEach(piece -> {
+        }
+        for(Piece piece : opponentPieces) {
             this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].add(piece);
             this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].setContainsPiece(true);
-        });
+        }
+
+//        for (int i = 1; i <= 8; i++) {
+//            for (int j = 1; j <= 8; j++) {
+//                if ( this.imaginaryBoard.getAllSquares()[i][j].getContainsPiece() ){
+//                    System.out.println(this.imaginaryBoard.getAllSquares()[i][j]);
+//                    System.out.println( (this.imaginaryBoard.getAllSquares()[i][j]).getComponents().length );
+//                }
+//            }
+//        }
+
+//        System.out.println(((Piece) imaginaryBoard.getAllSquares()[1][1].getComponents()[1]).isWhite());
     }
     public void placePieceIonPositionJonImaginaryBoard(Piece currentPiece, Position currentTargetPosition){
+
         //I need to ask myself if a piece was on that imaginary square -> it needs to be slain
         if(((Square) imaginaryBoard.getAllSquares()[currentTargetPosition.getRowPosition()][currentTargetPosition.getColPosition()]).getContainsPiece()){
-            //TODO: IMPORTANT! -> the index is zero because in imaginary squares you only contain pieces. You don't have labels anymore
-            imaginaryBoard.getAllSquares()[currentTargetPosition.getRowPosition()][currentTargetPosition.getColPosition()].remove(0);
+            //TODO: IMPORTANT! -> the index is zero because in imaginary squares you only contain pieces. You don't have labels anymore. LE: I added dummy labels
+            imaginaryBoard.getAllSquares()[currentTargetPosition.getRowPosition()][currentTargetPosition.getColPosition()].remove(1);
         }
         //Set false to contains piece for previous square of current piece
         this.imaginaryBoard.getAllSquares()[currentPiece.getPiecePosition().getRowPosition()][currentPiece.getPiecePosition().getColPosition()].setContainsPiece(false);

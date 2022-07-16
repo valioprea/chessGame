@@ -3,8 +3,20 @@ import java.awt.*;
 import java.io.IOException;
 
 public class Board {
+
+    public String boardName;
+
+    public Board(String boardName) {
+        this.boardName = boardName;
+    }
+
+    public String getBoardName() {
+        return boardName;
+    }
+
     ListOfPieces pieceImageList = new ListOfPieces();
     public Square[][] allSquares = new Square[9][9];
+    public Square[][] allImaginarySquares = new Square[9][9];
     public String printedPosition;
     public int squareDimension = 60;
     public boolean alternativeColor = true;
@@ -52,13 +64,16 @@ public class Board {
         gameFrame.setVisible(true);
     }
 
-    public void generateImaginarySquares(GameLogic gameLogic){
-        Square[][] allImaginarySquares = new Square[9][9];
+    public void generateImaginarySquares(GameLogic gameLogic){ //TODO: la initializarea Squares imaginary, pe pozitia 0 au labelul
+
         for( int i=1; i<=8; i++){
             for ( int j=1; j<=8; j++) {
-                allImaginarySquares[i][j] = new Square(gameLogic);
-                allImaginarySquares[i][j].setRowPosition(i);
-                allImaginarySquares[i][j].setColumnPosition(j);
+                this.allImaginarySquares[i][j] = new Square(gameLogic);
+                this.allImaginarySquares[i][j].setRowPosition(i);
+                this.allImaginarySquares[i][j].setColumnPosition(j);
+                JLabel dummyLabel = new JLabel("dummyLabel");
+                this.allImaginarySquares[i][j].add(dummyLabel);
+//                System.out.println(allImaginarySquares[i][j].getComponents().length);
             }
         };
     }
@@ -102,6 +117,16 @@ public class Board {
     }
 
     public Square[][] getAllSquares() {
-        return allSquares;
+
+        if(this.getBoardName()=="real"){
+            return allSquares;
+        } else {
+            return allImaginarySquares;
+        }
+
     }
+
+//    public Square[][] getAllImaginarySquares() {
+//        return allImaginarySquares;
+//    }
 }
