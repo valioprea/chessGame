@@ -82,7 +82,7 @@ public class GameLogic {
 //        }
 
         //Set false to contains piece for previous square
-        this.board.getAllSquares()[this.selectedPiece.getPiecePosition().getRowPosition()][this.selectedPiece.getPiecePosition().getColPosition()].setContainsPiece(false);
+//        this.board.getAllSquares()[this.selectedPiece.getPiecePosition().getRowPosition()][this.selectedPiece.getPiecePosition().getColPosition()].setContainsPiece(false);
 
         //Assign selected piece to new square
         this.board.getAllSquares()[rowPosition][columnPosition].add(this.selectedPiece);
@@ -113,10 +113,15 @@ public class GameLogic {
 
     //TODO: this function is a mess
     public void whyAmIPressing(int targetRowPosition, int targetColumnPosition) {
+
+        System.out.println("*** TEST ***");
+        System.out.println("This is the square: "+this.board.getAllSquares()[8][8]);
+        System.out.println("This is how many things a square contains: a label on 0 , a piece on 1 : "+this.board.getAllSquares()[8][8].getComponents().length );
+        System.out.println("To access the piece on the square: "+ this.board.getAllSquares()[8][8].getComponents()[1] );
+        System.out.println("*** END TEST ***");
+
         //I got a piece in hand, just pressed a square, I want to move my piece there.
         //I have a validator, how happy I am
-        System.out.println("#FIRST PRINT imaginary board is: "+this.imaginaryBoard);
-        System.out.println("#SECOND PRINT real board is: "+this.board);
         Position myTargetPosition = new Position(targetRowPosition, targetColumnPosition);
         ArrayList<Position> validPositions = evaluatePossibleMoves();
 
@@ -251,6 +256,7 @@ public class GameLogic {
     //TODO: learn how to change color of TODO lol
     public void slay(int rowPosition, int columnPosition){
         board.getAllSquares()[rowPosition][columnPosition].remove(1);
+        board.getAllSquares()[rowPosition][columnPosition].setContainsPiece(false);
 //        ((Piece) board.getAllSquares()[rowPosition][rowPosition].getComponents()[1]) = null; //TODO: how do I remove a piece correctly ?
         placePiece(rowPosition, columnPosition);
     }
@@ -301,9 +307,10 @@ public class GameLogic {
 
     //GET Possible moves of rook relative to current position
     //TODO: IMPORTANT!!! -> this method will also return an attacked position in which the opponent king is
-    public int utilizationOfthisfunction;
+    public int utilizationOfthisfunction=0;
     public ArrayList<Position> getRookPositions(Piece currentRook, Board currentBoard){
         utilizationOfthisfunction++;
+        System.out.println("I have used this function this times:  "+utilizationOfthisfunction+" with board "+currentBoard.getBoardName());
         Position currentPosition = currentRook.getPiecePosition();
         //targets - an array of positions that are attacked by the rook
         ArrayList<Position> targets = new ArrayList<>();
@@ -313,11 +320,8 @@ public class GameLogic {
         while (horizontalNegative >= 1 ) {
             //IS THERE A PIECE?
             if(currentBoard.getAllSquares()[currentPosition.getRowPosition()][horizontalNegative].getContainsPiece()) {
-                System.out.println("IACA SUNTEM SI ACIA --->>>--->>> suntem la utilizarea "+utilizationOfthisfunction);
-                System.out.println("IACA SUNTEM SI ACIA --->>>--->>> "+ currentBoard.getAllSquares()[currentPosition.getRowPosition()][horizontalNegative].getContainsPiece());
-                System.out.println( ((Piece) currentBoard.getAllSquares()[currentPosition.getRowPosition()][horizontalNegative].getComponents()[1]).getPiecePosition() );
-                System.out.println(currentBoard.getAllSquares()[currentPosition.getRowPosition()][horizontalNegative].getComponents().length );
                 //IS THE EXISTING PIECE SAME COLOR AS MINE ?
+                //TODO: here i have the error ...
                 if(((Piece) currentBoard.getAllSquares()[currentPosition.getRowPosition()][horizontalNegative].getComponents()[1]).isWhite() == currentRook.isWhite() ) {
                     break;
                 } else {
@@ -628,6 +632,7 @@ public class GameLogic {
         ArrayList<Piece> allOpponentPieces = getAllPiecesOfThisColor(color, currentBoard);
         ArrayList<Position> allOpponentPossibleAttacks = new ArrayList<>();
 
+        int a = 0;
         for (Piece piece : allOpponentPieces){
 
             if( piece.getName() == "rook" ){
@@ -636,7 +641,7 @@ public class GameLogic {
                 for(Position position : getRookPositions(piece,currentBoard)){
                     allOpponentPossibleAttacks.add(position);
                 }
-
+                a++;
             } else if (piece.getName() == "knight") {
 
                 //I am grabbing the attacked positions of this piece, at its own position!
@@ -660,7 +665,7 @@ public class GameLogic {
             }
         }
 
-
+        System.out.println("UITE DE ATATEA ORI:   "+a);
         //TODO: this whole array of possitions may contain duplicates
         return allOpponentPossibleAttacks;
     }
@@ -677,35 +682,52 @@ public class GameLogic {
             color = false;
             oppositeColor = true;
         }
-        System.out.println(this.board.getBoardName());
+
         System.out.println(" LA  FIND 2");
+
         ArrayList<Piece> allMyPieces = getAllPiecesOfThisColor(color, this.board); //PRIMUL APEL CRONOLOGIC AL FUNCTIEI
+
         System.out.println(allMyPieces);
+
         System.out.println(" LA  FIND 3");
+
         ArrayList<Piece> allOpponentPieces = getAllPiecesOfThisColor(oppositeColor, this.board); //AL DOILEA APEL CRONOLOGIC AL FUNCTIEI
 
         //I have all my pieces. I want each position of each piece to compute.
+        System.out.println("*** TEST ***");
+        System.out.println("This is the square: "+this.board.getAllSquares()[8][8]);
+        System.out.println("This is how many things a square contains: a label on 0 , a piece on 1 : "+this.board.getAllSquares()[8][8].getComponents().length );
+        System.out.println("To access the piece on the square: "+ this.board.getAllSquares()[8][8].getComponents()[1] );
+        System.out.println("*** END TEST ***");
         //For each piece...
         for (Piece piece : allMyPieces){ //GET PIECE i
-
+            System.out.println(piece.getName());
             //What piece type do I have?
             if( piece.getName() == "rook" ){
 
                 //Get all positions for the rook
+                System.out.println("Print me. get rook positions with real will be next");
                 ArrayList<Position> rookPositions = getRookPositions(piece, this.board); //-> i need to know the ''real'' moves
                 //For each position...
+                int indexDeVerificare = 0;
                 for( Position position : rookPositions ){ //GET POSITION j
-
+                    System.out.println(position.toString());
                     //CREATE imaginary board - refresh - clean
+                    assignImaginaryBoardCurrentPieces(allMyPieces,allOpponentPieces); //TODO: THIS HAPPENS FOR EACH POSITION ! //aici nu se foloseste getRookPositions
 
-                    assignImaginaryBoardCurrentPieces(allMyPieces,allOpponentPieces); //TODO: THIS HAPPENS FOR EACH POSITION !
-
+//                    System.out.println("*** TEST ***");
+//                    System.out.println("Oare dupa assignment, mi le fura practic din tabla reala si le aseaza pe cea imaginara si tabla reala ramane goala ?");
+//                    System.out.println("This is the square: "+this.board.getAllSquares()[8][8]);
+//                    System.out.println("This is how many things a square contains: a label on 0 , a piece on 1 : "+this.board.getAllSquares()[8][8].getComponents().length );
+//                    System.out.println("To access the piece on the square: "+ this.board.getAllSquares()[8][8].getComponents()[1] );
+//                    System.out.println("*** END TEST ***");
                     //PLACE piece i on position j on the imaginary board
-                    placePieceIonPositionJonImaginaryBoard(piece,position);
+                    placePieceIonPositionJonImaginaryBoard(piece,position); //Nici aici nu se foloseste getRookPositions
 
                     //GET all attacked squares by the opponent -> in the context of the imaginary move
-                    ArrayList<Position> dangerZone = getAllAttackedSquaresByOpponent(this.imaginaryBoard);
-
+                    System.out.println("Deci ... -> "+ indexDeVerificare);
+                    ArrayList<Position> dangerZone = getAllAttackedSquaresByOpponent(this.imaginaryBoard); //Foloseste get rook positions de 3 ori pentru ca o utilizeaza si queen as rook gg
+                    indexDeVerificare++;
                     //GET all my pieces from the imaginary board // My imaginary arrangement of pieces
                     ArrayList<Piece> myImaginaryArrangement = getAllPiecesOfThisColor(color, this.imaginaryBoard);
 
@@ -816,6 +838,14 @@ public class GameLogic {
             } else if (piece.getName() == "queen") {
 
                 //Get all positions for the queen
+
+                System.out.println("ASTA E FIX INAINTE DE EROARE, URMEAZA SA O PRIND");
+                System.out.println("*** TEST ***");
+                System.out.println("This is the square: "+this.board.getAllSquares()[8][8]);
+                System.out.println("This is how many things a square contains: a label on 0 , a piece on 1 : "+this.board.getAllSquares()[8][8].getComponents().length );
+                System.out.println("To access the piece on the square: "+ this.board.getAllSquares()[8][8].getComponents()[1] );
+                System.out.println("*** END TEST ***");
+
                 ArrayList<Position> queenPositions = getQueenPositions(piece, this.board); //-> i need to know the ''real'' moves
                 //For each position...
                 for( Position position : queenPositions ){ //GET POSITION j
@@ -870,7 +900,6 @@ public class GameLogic {
     };
 
 
-
     //How do all squares from the imaginary board look like -> imaginaryBoard.getAllSquares()[rowPosition][columnPosition]
     //How does a square look like: -> imaginaryBoard.getAllSquares()[rowPosition][columnPosition]
     //How does a piece look like: -> ((Piece) imaginaryBoard.getAllSquares()[i][j].getComponents()[1])
@@ -907,23 +936,37 @@ public class GameLogic {
             this.imaginaryBoard.getAllSquares()[piece.getPiecePosition().getRowPosition()][piece.getPiecePosition().getColPosition()].setContainsPiece(true);
         }
 
-//        for (int i = 1; i <= 8; i++) {
-//            for (int j = 1; j <= 8; j++) {
-//                if ( this.imaginaryBoard.getAllSquares()[i][j].getContainsPiece() ){
-//                    System.out.println(this.imaginaryBoard.getAllSquares()[i][j]);
-//                    System.out.println( (this.imaginaryBoard.getAllSquares()[i][j]).getComponents().length );
-//                }
-//            }
-//        }
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                if ( this.imaginaryBoard.getAllSquares()[i][j].getContainsPiece() ){
+                    System.out.println(this.imaginaryBoard.getAllSquares()[i][j]);
+                    System.out.println( (this.imaginaryBoard.getAllSquares()[i][j]).getComponents().length );
+                }
+            }
+        }
+        System.out.println("Le mai contine realul ?");
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                if ( this.board.getAllSquares()[i][j].getContainsPiece() ){
+                    System.out.println(this.board.getAllSquares()[i][j]);
+                    System.out.println( (this.board.getAllSquares()[i][j]).getComponents().length );
+                }
+            }
+        }
 
 //        System.out.println(((Piece) imaginaryBoard.getAllSquares()[1][1].getComponents()[1]).isWhite());
     }
     public void placePieceIonPositionJonImaginaryBoard(Piece currentPiece, Position currentTargetPosition){
-
+        System.out.println("*** TEST *** -> place Piece I on position J");
+        System.out.println("This is the square: "+this.board.getAllSquares()[8][8]);
+        System.out.println("This is how many things a square contains: a label on 0 , a piece on 1 : "+this.board.getAllSquares()[8][8].getComponents().length );
+        System.out.println("To access the piece on the square: "+ this.board.getAllSquares()[8][8].getComponents()[1] );
+        System.out.println("*** END TEST ***");
         //I need to ask myself if a piece was on that imaginary square -> it needs to be slain
         if(((Square) imaginaryBoard.getAllSquares()[currentTargetPosition.getRowPosition()][currentTargetPosition.getColPosition()]).getContainsPiece()){
-            //TODO: IMPORTANT! -> the index is zero because in imaginary squares you only contain pieces. You don't have labels anymore. LE: I added dummy labels
+            //TODO: IMPORTANT! -> the index is 1 because in imaginary squares you contain dummy labels and pieces
             imaginaryBoard.getAllSquares()[currentTargetPosition.getRowPosition()][currentTargetPosition.getColPosition()].remove(1);
+            imaginaryBoard.getAllSquares()[currentTargetPosition.getRowPosition()][currentTargetPosition.getColPosition()].setContainsPiece(false);
         }
         //Set false to contains piece for previous square of current piece
         this.imaginaryBoard.getAllSquares()[currentPiece.getPiecePosition().getRowPosition()][currentPiece.getPiecePosition().getColPosition()].setContainsPiece(false);

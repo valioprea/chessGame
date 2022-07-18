@@ -48,6 +48,8 @@ public class Square extends JPanel {
                 '}';
     }
 
+
+
     public void eventHandler() {
         this.addMouseListener(new MouseListener() {
 

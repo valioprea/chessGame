@@ -96,6 +96,8 @@ public class Board {
         this.allSquares[8][6].add(new Bishop("bishop", new Position(8,6), new ImageIcon(this.pieceImageList.getListOfPieceImages()[2]), gameLogic, true,true));
         this.allSquares[8][4].setContainsPiece(true);
         this.allSquares[8][4].add(new Queen("queen", new Position(8,4), new ImageIcon(this.pieceImageList.getListOfPieceImages()[1]), gameLogic, true, true));
+        this.allSquares[8][5].setContainsPiece(true);
+        this.allSquares[8][5].add(new King("king", new Position(8,5), new ImageIcon(this.pieceImageList.getListOfPieceImages()[0]), gameLogic, true, true));
 
         //BLACK PIECES
         this.allSquares[1][8].setContainsPiece(true);
@@ -112,6 +114,8 @@ public class Board {
         this.allSquares[1][6].add(new Bishop("bishop", new Position(1,6), new ImageIcon(this.pieceImageList.getListOfPieceImages()[8]), gameLogic, false, false));
         this.allSquares[1][4].setContainsPiece(true);
         this.allSquares[1][4].add(new Queen("queen", new Position(1,4), new ImageIcon(this.pieceImageList.getListOfPieceImages()[7]), gameLogic, false,false));
+        this.allSquares[1][5].setContainsPiece(true);
+        this.allSquares[1][5].add(new King("king", new Position(1,5), new ImageIcon(this.pieceImageList.getListOfPieceImages()[6]), gameLogic, false, false));
 
         gameFrame.setVisible(true);
     }
