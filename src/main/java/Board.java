@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class Board {
+public class Board implements Cloneable{
     ListOfPieces pieceImageList = new ListOfPieces();
     public Square[][] allSquares = new Square[9][9];
     public String printedPosition;
@@ -36,14 +36,10 @@ public class Board {
                 JLabel positionLabel = new JLabel(generatedSquareString+"  "+this.printedPosition);
                 positionLabel.setHorizontalAlignment(JLabel.CENTER);
                 this.allSquares[i][j].add(positionLabel, BorderLayout.SOUTH); //Finalization of generation of squares. Square[][] allSquares;
+                gameFrame.add(allSquares[i][j]); //add squares to game frame
                 generatedSquare++;
             }
         };
-        for( int i=1; i<=8; i++){
-            for ( int j=1; j<=8; j++) {
-                gameFrame.add(allSquares[i][j]); //add squares to game frame
-            }
-        }
         gameFrame.setTitle("VALI's CHESS GAME");
         gameFrame.setResizable(true);
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -52,57 +48,42 @@ public class Board {
         gameFrame.setVisible(true);
     }
 
-    public Square[][] generateImaginarySquares(GameLogic gameLogic){
-        Square[][] allImaginarySquares = new Square[9][9];
-        for( int i=1; i<=8; i++){
-            for ( int j=1; j<=8; j++) {
-                allImaginarySquares[i][j] = new Square(gameLogic);
-                allImaginarySquares[i][j].setRowPosition(i);
-                allImaginarySquares[i][j].setColumnPosition(j);
-            }
-        };
-        return allImaginarySquares;
-    }
-
-    public void initializePieces(GameLogic gameLogic, Square[][] allSquares) throws IOException {
-
-
+    public void initializePieces() throws IOException {
         //WHITE PIECES
-        this.allSquares[8][1].setContainsPiece(true);
-        this.allSquares[8][1].add(new Rook("rook", new Position(8,1), new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, true));
-        this.allSquares[8][8].setContainsPiece(true);
-        this.allSquares[8][8].add(new Rook("rook", new Position(8,8), new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), gameLogic, true, true));
-        this.allSquares[8][2].setContainsPiece(true);
-        this.allSquares[8][2].add(new Knight("knight", new Position(8,2), new ImageIcon(this.pieceImageList.getListOfPieceImages()[3]), gameLogic, true,true));
-        this.allSquares[8][7].setContainsPiece(true);
-        this.allSquares[8][7].add(new Knight("knight", new Position(8,7), new ImageIcon(this.pieceImageList.getListOfPieceImages()[3]), gameLogic, true,true));
-        this.allSquares[8][3].setContainsPiece(true);
-        this.allSquares[8][3].add(new Bishop("bishop", new Position(8,3), new ImageIcon(this.pieceImageList.getListOfPieceImages()[2]), gameLogic, true,true));
-        this.allSquares[8][6].setContainsPiece(true);
-        this.allSquares[8][6].add(new Bishop("bishop", new Position(8,6), new ImageIcon(this.pieceImageList.getListOfPieceImages()[2]), gameLogic, true,true));
-        this.allSquares[8][4].setContainsPiece(true);
-        this.allSquares[8][4].add(new Queen("queen", new Position(8,4), new ImageIcon(this.pieceImageList.getListOfPieceImages()[1]), gameLogic, true, true));
+        this.allSquares[8][1].setPiece(new Rook("rook", new Position(8,1), new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), "white", true));
+        this.allSquares[8][8].setPiece(new Rook("rook", new Position(8,8), new ImageIcon(this.pieceImageList.getListOfPieceImages()[4]), "white", true));
+        this.allSquares[8][2].setPiece(new Knight("knight", new Position(8,2), new ImageIcon(this.pieceImageList.getListOfPieceImages()[3]), "white",true));
+        this.allSquares[8][7].setPiece(new Knight("knight", new Position(8,7), new ImageIcon(this.pieceImageList.getListOfPieceImages()[3]), "white",true));
+        this.allSquares[8][3].setPiece(new Bishop("bishop", new Position(8,3), new ImageIcon(this.pieceImageList.getListOfPieceImages()[2]), "white",true));
+        this.allSquares[8][6].setPiece(new Bishop("bishop", new Position(8,6), new ImageIcon(this.pieceImageList.getListOfPieceImages()[2]), "white",true));
+        this.allSquares[8][4].setPiece(new Queen("queen", new Position(8,4), new ImageIcon(this.pieceImageList.getListOfPieceImages()[1]), "white", true));
+        this.allSquares[8][5].setPiece(new King("king", new Position(8,5), new ImageIcon(this.pieceImageList.getListOfPieceImages()[0]), "white", true));
 
         //BLACK PIECES
-        this.allSquares[1][8].setContainsPiece(true);
-        this.allSquares[1][8].add(new Rook("rook", new Position(1,8), new ImageIcon(this.pieceImageList.getListOfPieceImages()[10]), gameLogic, false, false));
-        this.allSquares[1][1].setContainsPiece(true);
-        this.allSquares[1][1].add(new Rook("rook", new Position(1,1), new ImageIcon(this.pieceImageList.getListOfPieceImages()[10]), gameLogic, false, false));
-        this.allSquares[1][2].setContainsPiece(true);
-        this.allSquares[1][2].add(new Knight("knight", new Position(1,2), new ImageIcon(this.pieceImageList.getListOfPieceImages()[9]), gameLogic, false, false));
-        this.allSquares[1][7].setContainsPiece(true);
-        this.allSquares[1][7].add(new Knight("knight", new Position(1,7), new ImageIcon(this.pieceImageList.getListOfPieceImages()[9]), gameLogic, false, false));
-        this.allSquares[1][3].setContainsPiece(true);
-        this.allSquares[1][3].add(new Bishop("bishop", new Position(1,3), new ImageIcon(this.pieceImageList.getListOfPieceImages()[8]), gameLogic, false, false));
-        this.allSquares[1][6].setContainsPiece(true);
-        this.allSquares[1][6].add(new Bishop("bishop", new Position(1,6), new ImageIcon(this.pieceImageList.getListOfPieceImages()[8]), gameLogic, false, false));
-        this.allSquares[1][4].setContainsPiece(true);
-        this.allSquares[1][4].add(new Queen("queen", new Position(1,4), new ImageIcon(this.pieceImageList.getListOfPieceImages()[7]), gameLogic, false,false));
+        this.allSquares[1][8].setPiece(new Rook("rook", new Position(1,8), new ImageIcon(this.pieceImageList.getListOfPieceImages()[10]), "black", false));
+        this.allSquares[1][1].setPiece(new Rook("rook", new Position(1,1), new ImageIcon(this.pieceImageList.getListOfPieceImages()[10]), "black", false));
+        this.allSquares[1][2].setPiece(new Knight("knight", new Position(1,2), new ImageIcon(this.pieceImageList.getListOfPieceImages()[9]), "black", false));
+        this.allSquares[1][7].setPiece(new Knight("knight", new Position(1,7), new ImageIcon(this.pieceImageList.getListOfPieceImages()[9]), "black", false));
+        this.allSquares[1][3].setPiece(new Bishop("bishop", new Position(1,3), new ImageIcon(this.pieceImageList.getListOfPieceImages()[8]), "black", false));
+        this.allSquares[1][6].setPiece(new Bishop("bishop", new Position(1,6), new ImageIcon(this.pieceImageList.getListOfPieceImages()[8]), "black", false));
+        this.allSquares[1][4].setPiece(new Queen("queen", new Position(1,4), new ImageIcon(this.pieceImageList.getListOfPieceImages()[7]), "black",false));
+        this.allSquares[1][5].setPiece(new King("king", new Position(1,5), new ImageIcon(this.pieceImageList.getListOfPieceImages()[6]), "black", false));
 
         gameFrame.setVisible(true);
     }
 
     public Square[][] getAllSquares() {
-        return allSquares;
+            return allSquares;
     }
+
+    @Override
+    public Board clone() {
+        try {
+            Board clone = (Board) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
 }

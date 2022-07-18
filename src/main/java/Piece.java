@@ -1,24 +1,22 @@
 import javax.swing.*;
 
-public class Piece extends JLabel {
+public class Piece extends JLabel{
+    private final String name;
+    private boolean canBeMoved;
 
-    public boolean canBeMoved;
-    private String name;
-    public GameLogic gameLogic;
-    public boolean isWhite;
+    private final String color;
     public Position piecePosition;
 
-    public Piece(String name,Position initialPosition, Icon icon, GameLogic gameLogic, boolean isWhite, boolean firstMove) {
+    public Piece(String name,Position initialPosition, Icon icon, String color, boolean firstMove) {
         super(icon);
         this.name = name;
         this.piecePosition = initialPosition;
-        this.gameLogic = gameLogic;
-        this.isWhite = isWhite;
+        this.color = color;
         this.canBeMoved = firstMove;
     }
-
-    public boolean isWhite() {
-        return isWhite;
+    @Override
+    public String getName() {
+        return this.name;
     }
     public boolean isCanBeMoved() {
         return canBeMoved;
@@ -26,20 +24,15 @@ public class Piece extends JLabel {
     public void setCanBeMoved(boolean canBeMoved) {
         this.canBeMoved = canBeMoved;
     }
-
+    public String getColor() {
+        return this.color;
+    }
     public Position getPiecePosition() {
         return piecePosition;
     }
-
     public void setPiecePosition(Position piecePosition) {
         this.piecePosition = piecePosition;
     }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
     @Override
     public String toString() {
         return "Piece{" +
@@ -47,4 +40,5 @@ public class Piece extends JLabel {
                 ", piecePosition=" + piecePosition +
                 '}';
     }
+
 }

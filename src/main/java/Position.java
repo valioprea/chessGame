@@ -46,4 +46,5 @@ public class Position {
     public int hashCode() {
         return Objects.hash(rowPosition, colPosition);
     }
+
 }
