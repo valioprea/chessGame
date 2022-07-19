@@ -3,7 +3,6 @@ import javax.swing.*;
 public class Piece extends JLabel{
     private final String name;
     private boolean canBeMoved;
-
     private final String color;
     public Position piecePosition;
 

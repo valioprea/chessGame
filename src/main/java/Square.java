@@ -3,15 +3,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class Square extends JPanel {
-    private GameLogic gameLogic;
+    private GameLogic gameLogic = new GameLogic();
     private int rowPosition; //(ROW, COLUMN)
     private int columnPosition; //(ROW, COLUMN)
 
     private Piece piece;
 
     //CONSTRUCTOR
-    public Square(GameLogic gameLogic){
-        this.gameLogic = gameLogic;
+    public Square(){
         eventHandler();
     }
 
