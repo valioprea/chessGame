@@ -1,8 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Board implements Cloneable{
+public class Board implements Serializable {
     ListOfPieces pieceImageList = new ListOfPieces();
     public Square[][] allSquares = new Square[9][9];
     public String printedPosition;
@@ -75,15 +76,4 @@ public class Board implements Cloneable{
     public Square[][] getAllSquares() {
             return allSquares;
     }
-
-    @Override
-    public Board clone() {
-        try {
-            Board clone = (Board) super.clone();
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
-    }
-
 }

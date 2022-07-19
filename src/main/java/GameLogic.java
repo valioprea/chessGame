@@ -1,4 +1,9 @@
+import com.google.gson.Gson;
+
 import javax.swing.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 //THIS SHOULD PROBABLY BECOME SOME SORT OF CLASS THAT CONTAINS ALL METHODS WHO GENERATE MOVEMENT LOGIC IN THE FUTURE.
@@ -119,7 +124,8 @@ public class GameLogic {
 //        for (Position position : getAllAttacks){
 //            System.out.println("Attacked square is: "+position);
 //        }
-        ArrayList<Position> validPositions = evaluatePossibleMoves();
+//        ArrayList<Position> validPositions = evaluatePossibleMoves();
+        System.out.println(evaluatePossibleMoves());
         placePiece(targetRowPosition,targetColumnPosition);
 
         //I got a piece in hand, just pressed a square, I want to move my piece there.
@@ -196,7 +202,6 @@ public class GameLogic {
     //TODO: COMPUTATIONS #######################################################################################################################################################
 
 
-    //TODO: FUNCTION CHECKED!
     //UTILITY - get all pieces of the same color WHITE OR BLACK
     public ArrayList<Piece> getAllPiecesOfThisColor(String color, Board currentBoard){
         ArrayList<Piece> allWhitePieces = new ArrayList<>();
@@ -622,9 +627,11 @@ public class GameLogic {
                 for( Position position : rookPositions ){ //GET POSITION j
 
                     //CREATE imaginary board - ''copy'' the context of the real board, need to work only on the copy
-                    Board imaginaryBoard = this.board.clone();
+                    Gson gson = new Gson();
+                    Board imaginaryBoard = gson.fromJson( gson.toJson(this.board), Board.class );
+//                    Board imaginaryBoard = this.board.clone();
                     Piece imaginaryPiece = imaginaryBoard.getAllSquares()[position.getRowPosition()][position.getColPosition()].getPiece();
-                    System.out.println("Ia de citeste asta: "+imaginaryBoard.getAllSquares()[position.getRowPosition()][position.getColPosition()]);
+//                    System.out.println("Ia de citeste asta: "+imaginaryBoard.getAllSquares()[position.getRowPosition()][position.getColPosition()]);
 
                     //CREATE imaginary board - refresh - clean
 //                    assignImaginaryBoardCurrentPieces(allMyPieces,allOpponentPieces); //TODO: THIS HAPPENS FOR EACH POSITION ! //aici nu se foloseste getRookPositions

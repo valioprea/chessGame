@@ -12,8 +12,6 @@ public class Main {
         board.initializeSquares(gameLogic);
         board.initializePieces();
 
-
-
         gameLogic.setFrame(board.gameFrame);
     }
 }
