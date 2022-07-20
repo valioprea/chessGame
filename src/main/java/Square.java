@@ -3,7 +3,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class Square extends JPanel {
-    private GameLogic gameLogic = new GameLogic();
     private int rowPosition; //(ROW, COLUMN)
     private int columnPosition; //(ROW, COLUMN)
 
@@ -64,7 +63,7 @@ public class Square extends JPanel {
             public void mousePressed(MouseEvent e) {
 
                 //FIRST SEQUENCE OF CLICK -> you should grab a piece
-                if(gameLogic.getSequence() == 1) {
+                if(Singleton.getGameLogic().getSequence() == 1) {
 
                     //Did I click on a square that contains a piece ?
                     if(getPiece() != null) {
@@ -73,20 +72,20 @@ public class Square extends JPanel {
                         if( ((Piece) ((Square) e.getComponent()).getComponents()[1]).isCanBeMoved() ){
 
                             //Let's grab it!
-                            gameLogic.grabPiece( ((Piece)((Square)e.getComponent()).getComponents()[1]) );
+                            Singleton.getGameLogic().grabPiece( ((Piece)((Square)e.getComponent()).getComponents()[1]) );
 
                         } else {
                             System.out.println("Wait for your turn please");
                         }
                     } else {
                         System.out.println("I was just pressing on the board (from piece)");
-                        System.out.println("Sequence will be "+gameLogic.getSequence()+": you need to grab a piece");
-                        System.out.println(gameLogic.getGameTurn());
+                        System.out.println("Sequence will be "+Singleton.getGameLogic().getSequence()+": you need to grab a piece");
+                        System.out.println(Singleton.getGameLogic().getGameTurn());
                     }
 
                 } else {
                     //SECOND SEQUENCE OF CLICK (on another square). Let's see what things can we do:
-                    gameLogic.whyAmIPressing(getRowPosition(), getColumnPosition());
+                    Singleton.getGameLogic().whyAmIPressing(getRowPosition(), getColumnPosition());
                 }
             }
 

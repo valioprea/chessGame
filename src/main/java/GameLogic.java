@@ -175,7 +175,7 @@ public class GameLogic {
     //TODO: this function is a mess
     public void whyAmIPressing(int targetRowPosition, int targetColumnPosition) {
 
-        System.out.println(this.allSquares[1][1]);
+//        System.out.println("Vali "+this.allSquares[1][1]);
 //        for (int i = 0; i < 8; i++) {
 //            for (int j = 0; j < 8; j++) {
 //                System.out.println(this.getAllSquares()[i][j].getPiece());
@@ -191,7 +191,7 @@ public class GameLogic {
 //            System.out.println("Attacked square is: "+position);
 //        }
 //        ArrayList<Position> validPositions = evaluatePossibleMoves();
-//        System.out.println(evaluatePossibleMoves());
+        System.out.println(evaluatePossibleMoves());
 //        placePiece(targetRowPosition,targetColumnPosition);
         System.out.println("i don't know why i am pressing");
         //I got a piece in hand, just pressed a square, I want to move my piece there.

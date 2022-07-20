@@ -5,10 +5,12 @@ public class Main {
         System.out.println("Welcome to my chess game");
         System.out.println("White moves first");
 
-        GameLogic gameLogic = new GameLogic();
+//        Singleton gameLogic = new GameLogic();
 
-        gameLogic.generateSquares();
-        gameLogic.initializePieces();
+        Singleton.getGameLogic().generateSquares();
+        Singleton.getGameLogic().initializePieces();
+//        gameLogic.generateSquares();
+//        gameLogic.initializePieces();
 
 
     }
