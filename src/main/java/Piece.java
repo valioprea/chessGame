@@ -1,19 +1,18 @@
 import javax.swing.*;
 
-public class Piece extends JLabel{
+public class Piece{
     private final String name;
     private boolean canBeMoved;
     private final String color;
     public Position piecePosition;
 
-    public Piece(String name,Position initialPosition, Icon icon, String color, boolean firstMove) {
-        super(icon);
+    public Piece(String name,Position initialPosition, String color, boolean firstMove) {
         this.name = name;
         this.piecePosition = initialPosition;
         this.color = color;
         this.canBeMoved = firstMove;
     }
-    @Override
+
     public String getName() {
         return this.name;
     }
